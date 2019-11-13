@@ -1,5 +1,6 @@
 package main
 
+
 import (
 	"fmt"
 	s "github.com/gaspardpeduzzi/spring_block/server"
@@ -15,7 +16,6 @@ func main(){
 
 
 }
-
 
 
 func display(){
