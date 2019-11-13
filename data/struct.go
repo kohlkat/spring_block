@@ -1,4 +1,4 @@
-package main
+package data
 
 type LedgerResponse struct {
 	ID     int `json:"id"`
@@ -18,7 +18,7 @@ type LedgerResponse struct {
 			ParentHash          string   `json:"parent_hash"`
 			SeqNum              string   `json:"seqNum"`
 			TotalCoins          string   `json:"totalCoins"`
-			Total_Coins          string   `json:"total_coins"`
+			Total_Coins         string   `json:"total_coins"`
 			TransactionHash     string   `json:"transaction_hash"`
 			Transactions        []string `json:"transactions"`
 		} `json:"ledger"`
@@ -30,19 +30,21 @@ type LedgerResponse struct {
 	Type   string `json:"type"`
 }
 
-
 type LedgerRequest struct {
-	Id 				int `json:"id"`
-	Command 		string `json:"command"`
-	LedgerIndex 	string `json:"ledger_index"`
-	Full 			bool `json:"full"`
-	Accounts 		bool `json:"accounts"`
-	Transactions 	bool `json:"transactions"`
-	Expand 			bool `json:"expand"`
-	OwnerFunds  	bool `json:"owner_funds"`
+	Id           int    `json:"id"`
+	Command      string `json:"command"`
+	LedgerIndex  string `json:"ledger_index"`
+	Full         bool   `json:"full"`
+	Accounts     bool   `json:"accounts"`
+	Transactions bool   `json:"transactions"`
+	Expand       bool   `json:"expand"`
+	OwnerFunds   bool   `json:"owner_funds"`
 }
 
-
+type LedgerSeq struct {
+	Id      int    `json:"id"`
+	Command string `json:"command"`
+}
 
 // Payload object
 type message struct {

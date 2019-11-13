@@ -1,4 +1,4 @@
-package main
+package data
 
 // Basic exemple usage of https://xrpl.org/websocket-api-tool.html#book_offers
 
@@ -15,10 +15,8 @@ import (
 )
 
 // websocket address
-var addr = flag.String("addr", "s1.ripple.com:51233", "http service address")
 
-
-func xrp_orderbook() {
+func XrpGetOrderbook(addr *string) {
 	flag.Parse()
 	log.SetFlags(0)
 

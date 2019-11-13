@@ -1,4 +1,4 @@
-package main
+package data
 
 import (
 	"encoding/json"
@@ -14,7 +14,7 @@ import (
 
 var lastLedger = 51366888
 
-func main() {
+func GetLedgerData(addr *string) {
 	flag.Parse()
 	log.SetFlags(0)
 
@@ -33,7 +33,6 @@ func main() {
 	// on exit close
 	defer c.Close()
 	done := make(chan struct{})
-
 
 	var lr LedgerRequest
 
@@ -68,7 +67,7 @@ func main() {
 	response := &LedgerResponse{}
 	err = json.Unmarshal(message, response)
 	if err != nil {
-		panic( "Error unmarshalling"+err.Error())
+		panic("Error unmarshalling" + err.Error())
 	}
 
 	log.Println("if this is good this is nice", response.Result.Ledger.Transactions[0])
