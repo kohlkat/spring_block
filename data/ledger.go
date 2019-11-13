@@ -1,7 +1,5 @@
 package main
 
-// Basic exemple usage of https://xrpl.org/websocket-api-tool.html#book_offers
-
 import (
 	"encoding/json"
 	"flag"
@@ -14,32 +12,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// websocket address
-var addr = flag.String("addr", "s1.ripple.com:51233", "http service address")
-
-// Payload object
-type message struct {
-	Command string `json:"command"`
-	//Taker     string    `json:"taker"`
-	TakerGets takerGets `json:"taker_gets"`
-	TakerPays takerPays `json:"taker_pays"`
-	Limit     uint      `json:"limit"`
-}
-
-type takerGets struct {
-	Currency string `json:"currency"`
-}
-
-type takerPays struct {
-	Currency string `json:"currency"`
-	Issuer   string `json:"issuer"`
-}
+var lastLedger = 51366888
 
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-
-	var m message
 
 	// check for interrupts and cleanly close the connection
 	interrupt := make(chan os.Signal, 1)
@@ -55,19 +32,23 @@ func main() {
 	}
 	// on exit close
 	defer c.Close()
-
 	done := make(chan struct{})
 
-	// Exemple values
-	m.Command = "book_offers"
-	//m.Taker = "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59"
-	m.TakerGets.Currency = "XRP"
-	m.TakerPays.Currency = "USD"
-	m.TakerPays.Issuer = "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"
-	m.Limit = 10
+
+	var lr LedgerRequest
+
+	// Example values
+	lr.Id = lastLedger
+	lr.Command = "ledger"
+	lr.LedgerIndex = "validated"
+	lr.Full = false
+	lr.Accounts = false
+	lr.Transactions = true
+	lr.Expand = false
+	lr.OwnerFunds = false
 
 	// struct to JSON marshalling
-	msg, _ := json.Marshal(m)
+	msg, _ := json.Marshal(lr)
 	// write to the websocket
 	err = c.WriteMessage(websocket.TextMessage, []byte(string(msg)))
 	if err != nil {
@@ -83,6 +64,14 @@ func main() {
 	}
 	// print the response from the XRP Ledger
 	log.Printf("recv: %s", message)
+
+	response := &LedgerResponse{}
+	err = json.Unmarshal(message, response)
+	if err != nil {
+		panic( "Error unmarshalling"+err.Error())
+	}
+
+	log.Println("if this is good this is nice", response.Result.Ledger.Transactions[0])
 
 	// handle interrupt
 	for {
