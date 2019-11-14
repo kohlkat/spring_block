@@ -82,7 +82,7 @@ func (lo *Optimizer) parseTransactions() {
 				if err != nil {
 					log.Println(err)
 				}
-				log.Print("TAKER PAYS value ", dropToXrp(float64(price)), " XRP or ", dropToPriceInUSD(price) )
+				log.Print("TAKER PAYS value ", dropToXrp(float64(price)), " XRP or ", dropToPriceInUSD(price), " USD" )
 				//log.Print("TAKER PAYS value ", price, " XRP or ", price*1/4, " USD")
 			}
 
