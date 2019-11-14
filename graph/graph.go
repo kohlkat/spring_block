@@ -3,7 +3,6 @@ package graph
 import (
 	"sort"
 	"sync"
-
 	"github.com/gaspardpeduzzi/spring_block/data"
 )
 

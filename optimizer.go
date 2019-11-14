@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gaspardpeduzzi/spring_block/data"
+	"github.com/gaspardpeduzzi/spring_block/graph"
 	"log"
 	"strconv"
 )
@@ -82,7 +83,7 @@ func (lo *Optimizer) parseTransactions() {
 				if err != nil {
 					log.Println(err)
 				}
-				log.Print("TAKER PAYS value ", dropToXrp(float64(price)), " XRP or ", dropToPriceInUSD(price), " USD" )
+				log.Print("TAKER PAYS value ", graph.DropToXrp(float64(price)), " XRP or ", graph.DropToPriceInUSD(price), " USD" )
 				//log.Print("TAKER PAYS value ", price, " XRP or ", price*1/4, " USD")
 			}
 
@@ -99,7 +100,7 @@ func (lo *Optimizer) parseTransactions() {
 				if err != nil {
 					log.Println(err)
 				}
-				log.Print("TAKER GETS value ", dropToXrp(float64(price)), " XRP or ", dropToPriceInUSD(price), " USD" )
+				log.Print("TAKER GETS value ", graph.DropToXrp(float64(price)), " XRP or ", graph.DropToPriceInUSD(price), " USD" )
 			}
 			//log.Print("\n")
 			log.Println("===========================================================")
