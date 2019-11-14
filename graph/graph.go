@@ -11,7 +11,7 @@ var capacityList = 1000000
 // Graph : Data structure for graph of offers
 type Graph struct {
 	Graph map[string]map[string]*TxList
-	Lock  sync.Mutex
+	Lock  sync.RWMutex
 }
 
 // SimplerGraph : Data structure for graph of best offers
@@ -82,5 +82,5 @@ func (graph Graph) SortGraphWithTxs() Graph {
 			})
 		}
 	}
-	return Graph{Graph: sortedGraph, Lock: sync.Mutex{}}
+	return Graph{Graph: sortedGraph, Lock: sync.RWMutex{}}
 }
