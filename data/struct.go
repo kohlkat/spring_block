@@ -1,26 +1,26 @@
 package data
 
-type LedgerResponse struct {
+type LedgerResponseExpanded struct {
 	ID     int `json:"id"`
 	Result struct {
 		Ledger struct {
-			Accepted            bool     `json:"accepted"`
-			AccountHash         string   `json:"account_hash"`
-			CloseFlags          int      `json:"close_flags"`
-			CloseTime           int      `json:"close_time"`
-			CloseTimeHuman      string   `json:"close_time_human"`
-			CloseTimeResolution int      `json:"close_time_resolution"`
-			Closed              bool     `json:"closed"`
-			Hash                string   `json:"hash"`
-			LedgerHash          string   `json:"ledger_hash"`
-			LedgerIndex         string   `json:"ledger_index"`
-			ParentCloseTime     int      `json:"parent_close_time"`
-			ParentHash          string   `json:"parent_hash"`
-			SeqNum              string   `json:"seqNum"`
-			TotalCoins          string   `json:"totalCoins"`
-			Total_Coins         string   `json:"total_coins"`
-			TransactionHash     string   `json:"transaction_hash"`
-			Transactions        []string `json:"transactions"`
+			Accepted            bool   `json:"accepted"`
+			AccountHash         string `json:"account_hash"`
+			CloseFlags          int    `json:"close_flags"`
+			CloseTime           int    `json:"close_time"`
+			CloseTimeHuman      string `json:"close_time_human"`
+			CloseTimeResolution int    `json:"close_time_resolution"`
+			Closed              bool   `json:"closed"`
+			Hash                string `json:"hash"`
+			LedgerHash          string `json:"ledger_hash"`
+			LedgerIndex         string `json:"ledger_index"`
+			ParentCloseTime     int    `json:"parent_close_time"`
+			ParentHash          string `json:"parent_hash"`
+			SeqNum              string `json:"seqNum"`
+			TotalCoins          string `json:"totalCoins"`
+			Total_Coins          string `json:"total_coins"`
+			TransactionHash     string `json:"transaction_hash"`
+			Transactions        []Transaction  `json:"transactions"`
 		} `json:"ledger"`
 		LedgerHash  string `json:"ledger_hash"`
 		LedgerIndex int    `json:"ledger_index"`
@@ -28,6 +28,78 @@ type LedgerResponse struct {
 	} `json:"result"`
 	Status string `json:"status"`
 	Type   string `json:"type"`
+}
+
+type Transaction struct {
+	Account            string `json:"Account"`
+	Fee                string `json:"Fee"`
+	Flags              int    `json:"Flags"`
+	LastLedgerSequence int    `json:"LastLedgerSequence,omitempty"`
+	OfferSequence      int    `json:"OfferSequence,omitempty"`
+	Sequence           int    `json:"Sequence"`
+	SigningPubKey      string `json:"SigningPubKey"`
+	TakerGets         interface{}
+	TakerPays       interface{} `json:"TakerPays,omitempty"`
+	TransactionType string `json:"TransactionType"`
+	TxnSignature    string `json:"TxnSignature"`
+	Hash            string `json:"hash"`
+	MetaData        struct {
+		AffectedNodes []struct {
+			CreatedNode struct {
+				LedgerEntryType string `json:"LedgerEntryType"`
+				LedgerIndex     string `json:"LedgerIndex"`
+				NewFields       struct {
+					Account       string `json:"Account"`
+					BookDirectory string `json:"BookDirectory"`
+					Sequence      int    `json:"Sequence"`
+					TakerGets     interface{}
+					TakerPays interface{} `json:"TakerPays"`
+				} `json:"NewFields"`
+			} `json:"CreatedNode,omitempty"`
+			ModifiedNode struct {
+				FinalFields struct {
+					Flags     int    `json:"Flags"`
+					Owner     string `json:"Owner"`
+					RootIndex string `json:"RootIndex"`
+				} `json:"FinalFields"`
+				LedgerEntryType string `json:"LedgerEntryType"`
+				LedgerIndex     string `json:"LedgerIndex"`
+			} `json:"ModifiedNode,omitempty"`
+			DeletedNode struct {
+				FinalFields struct {
+					ExchangeRate      string `json:"ExchangeRate"`
+					Flags             int    `json:"Flags"`
+					RootIndex         string `json:"RootIndex"`
+					TakerGetsCurrency string `json:"TakerGetsCurrency"`
+					TakerGetsIssuer   string `json:"TakerGetsIssuer"`
+					TakerPaysCurrency string `json:"TakerPaysCurrency"`
+					TakerPaysIssuer   string `json:"TakerPaysIssuer"`
+				} `json:"FinalFields"`
+				LedgerEntryType string `json:"LedgerEntryType"`
+				LedgerIndex     string `json:"LedgerIndex"`
+			} `json:"DeletedNode,omitempty"`
+		} `json:"AffectedNodes"`
+		TransactionIndex  int    `json:"TransactionIndex"`
+		TransactionResult string `json:"TransactionResult"`
+	} `json:"metaData"`
+	Amount interface{} `json:"Amount,omitempty"`
+	Destination string `json:"Destination,omitempty"`
+	Paths       [][]struct {
+		Currency string `json:"currency"`
+		Issuer   string `json:"issuer,omitempty"`
+		Type     int    `json:"type"`
+		TypeHex  string `json:"type_hex"`
+	} `json:"Paths,omitempty"`
+	SendMax    interface{} `json:"SendMax,omitempty"`
+	Expiration int    `json:"Expiration,omitempty"`
+	Memos      []struct {
+		Memo struct {
+			MemoData   string `json:"MemoData"`
+			MemoFormat string `json:"MemoFormat"`
+			MemoType   string `json:"MemoType"`
+		} `json:"Memo"`
+	} `json:"Memos,omitempty"`
+	DestinationTag int `json:"DestinationTag,omitempty"`
 }
 
 type LedgerRequest struct {
@@ -40,6 +112,16 @@ type LedgerRequest struct {
 	Expand       bool   `json:"expand"`
 	OwnerFunds   bool   `json:"owner_funds"`
 }
+
+type ResponseCurrent struct {
+	ID     int `json:"id"`
+	Result struct {
+		LedgerCurrentIndex int `json:"ledger_current_index"`
+	} `json:"result"`
+	Status string `json:"status"`
+	Type   string `json:"type"`
+}
+
 
 type LedgerSeq struct {
 	Id      int    `json:"id"`
