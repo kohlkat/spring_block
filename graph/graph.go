@@ -1,17 +1,25 @@
 package graph
 
 import (
-	"github.com/gaspardpeduzzi/spring_block/data"
 	"sync"
+
+	"github.com/gaspardpeduzzi/spring_block/data"
 )
 
 type Graph struct {
-	Graph map[string]map[string]Tx
-	Lock sync.Mutex
-
+	Graph map[string]map[string]TxList
+	Lock  sync.Mutex
 }
 
-type Tx struct {
-	Txs []*data.Transaction
+type TxList struct {
+	List []*OfferCreate
+}
 
+type OfferCreate struct {
+	xrpTx    data.Transaction
+	rate     float64
+	index    string
+	volume   float64
+	makerCur float64
+	takerCur float64
 }
