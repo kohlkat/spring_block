@@ -6,13 +6,10 @@ import (
 	"strconv"
 )
 
-func GetOffers (tx data.Transaction) (offers []*Offer) {
-
-
+func (graph *Graph) AddOffers(tx data.Transaction) {
 	mapTx := make(map[string]*Offer)
-
-	//var weWillPay string
-	//var weWillGet string
+	var weWillPay string
+	var weWillGet string
 
 	for index, _ := range tx.MetaData.AffectedNodes {
 
@@ -27,7 +24,7 @@ func GetOffers (tx data.Transaction) (offers []*Offer) {
 		case map[string]interface{}:
 			//We need to pay in a given currency
 			log.Print("TAKER PAYS currency ", object["currency"]," value ",object["value"])
-			//weWillPay = object["currency"].(string)
+			weWillPay = object["currency"].(string)
 			priceToPay = object["value"].(string)
 		case string:
 			//We need to pay with the native currency
@@ -36,7 +33,7 @@ func GetOffers (tx data.Transaction) (offers []*Offer) {
 				log.Println(err)
 			}
 			log.Print("TAKER PAYS value ", DropToXrp(float64(price)), " XRP or ", DropToPriceInUSD(price), " USD" )
-			//weWillPay = "XRP"
+			weWillPay = "XRP"
 			priceToPay = object
 		default:
 			log.Println("unexpected type %T", object)
@@ -48,12 +45,12 @@ func GetOffers (tx data.Transaction) (offers []*Offer) {
 
 		case map[string]interface{}:
 			//We will get a given currency
-			//weWillGet = objectTG["currency"].(string)
+			weWillGet = objectTG["currency"].(string)
 			log.Print("TAKER GETS currency ", objectTG["currency"], " value ", objectTG["value"])
 			priceWillGet = objectTG["value"].(string)
 		case string:
 			//We will get the native currency
-			//weWillGet = "XRP"
+			weWillGet = "XRP"
 			price, err := strconv.Atoi(objectTG)
 			if err != nil {
 				log.Println(err)
@@ -66,30 +63,38 @@ func GetOffers (tx data.Transaction) (offers []*Offer) {
 
 		}
 
-		WillGet, err := strconv.Atoi(priceWillGet)
+		WillGet, err := strconv.ParseFloat(priceWillGet,64)
 		if err != nil {
+			log.Println("Error decoding",err)
 
 		}
-		WillPay, err := strconv.Atoi(priceToPay)
+		WillPay, err := strconv.ParseFloat(priceToPay, 64)
 		if err != nil {
+			log.Println("Error decoding",err)
 
 		}
-		rate := float64(WillGet/WillPay)
-		ptp, err := strconv.Atoi(priceToPay)
-		vol := rate*float64(ptp)
+
+		log.Println("will pay", WillPay, "will get", WillGet)
+
+
+		rate := WillGet/WillPay
+		vol := rate*WillPay
 
 		offer := Offer{
 			XrpTx:    tx,
 			Hash:     tx.Hash,
 			Rate:     rate,
 			Volume:   vol,
+			Pay: weWillPay,
+			Get: weWillGet,
 		}
+
 		mapTx[tx.Hash] = &offer
+		log.Println("============================================================")
 	}
 
 	for _, v := range mapTx {
-		offers = append(offers, v)
+		log.Println("ADDING", tx.Hash)
+		graph.addNewOffer(v.Pay, v.Get, v)
 	}
-
-	return
 }

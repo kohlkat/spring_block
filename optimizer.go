@@ -4,7 +4,7 @@ import (
 	"github.com/gaspardpeduzzi/spring_block/data"
 	"github.com/gaspardpeduzzi/spring_block/graph"
 	"log"
-	"strconv"
+	"sync"
 )
 
 
@@ -16,13 +16,18 @@ type Optimizer struct {
 	Transactions []data.Transaction
 	CreateTxs    []data.Transaction
 	CancelTxs    []data.Transaction
+	Graph 		 graph.Graph
 }
 
 func NewOptimizer(endpoint string) *Optimizer {
 	txs := make([]data.Transaction, maxCap)
 	txsOC := make([]data.Transaction, maxCap)
 	txsCancel := make([]data.Transaction, maxCap)
-	return &Optimizer{endpoint,txs, txsOC, txsCancel}
+	graph := graph.Graph{
+		Graph: make(map[string]map[string]*graph.TxList),
+		Lock:  sync.Mutex{},
+	}
+	return &Optimizer{endpoint,txs, txsOC, txsCancel, graph}
 }
 
 
@@ -54,59 +59,11 @@ func (lo *Optimizer) ConstructTxGraph(){
 	}
 }
 
-
-
-
 func (lo *Optimizer) parseTransactions() {
 	log.Println("parsing..")
-
 	for _, tx := range lo.CreateTxs {
+		lo.Graph.AddOffers(tx)
 
-		for index, _ := range tx.MetaData.AffectedNodes {
-
-			takerGets := tx.TakerGets
-			takerPays := tx.TakerPays
-
-			//log.Println(tx.TakerPays, tx.TakerGets)
-			log.Println("TX at", tx.Hash)
-
-			switch object := takerPays.(type) {
-			default:
-				log.Println("unexpected type %T", object)
-				log.Println(index)
-			case map[string]interface{}:
-				//log.Print("MAP object ")
-				log.Print("TAKER PAYS currency ", object["currency"]," value ",object["value"])
-			case string:
-				//log.Print("STRING object")
-				price, err := strconv.Atoi(object)
-				if err != nil {
-					log.Println(err)
-				}
-				log.Print("TAKER PAYS value ", graph.DropToXrp(float64(price)), " XRP or ", graph.DropToPriceInUSD(price), " USD" )
-				//log.Print("TAKER PAYS value ", price, " XRP or ", price*1/4, " USD")
-			}
-
-			switch objectTG := takerGets.(type) {
-			default:
-				log.Println("unexpected type %T", objectTG)
-				log.Println(index)
-			case map[string]interface{}:
-				//log.Print("MAP object ")
-				log.Print("TAKER GETS currency ", objectTG["currency"], " value ", objectTG["value"])
-			case string:
-				//log.Print("STRING object")
-				price, err := strconv.Atoi(objectTG)
-				if err != nil {
-					log.Println(err)
-				}
-				log.Print("TAKER GETS value ", graph.DropToXrp(float64(price)), " XRP or ", graph.DropToPriceInUSD(price), " USD" )
-			}
-			//log.Print("\n")
-			log.Println("===========================================================")
-
-
-		}
 	}
 }
 
