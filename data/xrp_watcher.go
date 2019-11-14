@@ -16,7 +16,7 @@ func GetLastLedgerSeq(addr *string) int {
 	flag.Parse()
 	log.SetFlags(0)
 
-	var ls LedgerSeq
+
 
 	// check for interrupts and cleanly close the connection
 	interrupt := make(chan os.Signal, 1)
@@ -33,6 +33,7 @@ func GetLastLedgerSeq(addr *string) int {
 	// on exit close
 	defer c.Close()
 
+	var ls LedgerSeqRequest
 	ls.Id = 2
 	ls.Command = "ledger_current"
 

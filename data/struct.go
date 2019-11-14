@@ -102,6 +102,12 @@ type Transaction struct {
 	DestinationTag int `json:"DestinationTag,omitempty"`
 }
 
+type LedgerSeqRequest struct {
+	Id      int    `json:"id"`
+	Command string `json:"command"`
+}
+
+
 type LedgerRequest struct {
 	Id           int    `json:"id"`
 	Command      string `json:"command"`
@@ -123,10 +129,6 @@ type ResponseCurrent struct {
 }
 
 
-type LedgerSeq struct {
-	Id      int    `json:"id"`
-	Command string `json:"command"`
-}
 
 // Payload object
 type message struct {
