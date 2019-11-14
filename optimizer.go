@@ -52,7 +52,7 @@ func (lo *Optimizer) ConstructTxGraph(){
 		}
 
 		lo.parseTransactions()
-		//lo.ConstructTxGraph()
+		lo.ConstructTxGraph()
 	} else {
 		log.Println("SIZE TRANSACTIONS", len(lo.CancelTxs)+len(lo.CreateTxs))
 		lo.ConstructTxGraph()
@@ -60,7 +60,7 @@ func (lo *Optimizer) ConstructTxGraph(){
 }
 
 func (lo *Optimizer) parseTransactions() {
-	log.Println("parsing..")
+	//log.Println("============================================================")
 	for _, tx := range lo.CreateTxs {
 		lo.Graph.AddOffers(tx)
 

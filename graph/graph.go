@@ -51,11 +51,13 @@ func (graph *Graph) initGraph(pay string, get string){
 		txlist := make([]*Offer, capacityList)
 		init := TxList{List:txlist}
 		graph.Graph[pay][get] = &init
+	} else if graph.Graph[pay][get] == nil {
+		txlist := make([]*Offer, capacityList)
+		init := TxList{List:txlist}
+		graph.Graph[pay][get] = &init
 	}
 	graph.Lock.Unlock()
 }
-
-
 
 
 

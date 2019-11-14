@@ -13,5 +13,4 @@ func DropToXrp(drop float64) (xrp float64){
 
 func DropToPriceInUSD(drop int) (usd float64){
 	return DropToXrp(float64(drop))*priceRipple
-
 }
