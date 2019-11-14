@@ -15,6 +15,7 @@ import (
 func GetLastLedgerSeq(addr *string) int {
 	flag.Parse()
 	log.SetFlags(0)
+	log.Println("waiting for next block...")
 
 
 
@@ -23,7 +24,7 @@ func GetLastLedgerSeq(addr *string) int {
 	signal.Notify(interrupt, os.Interrupt)
 
 	u := url.URL{Scheme: "ws", Host: *addr, Path: "/"}
-	log.Printf("connecting to %s", u.String())
+	//log.Printf("connecting to %s", u.String())
 
 	// make the connection
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -46,7 +47,7 @@ func GetLastLedgerSeq(addr *string) int {
 	if err != nil {
 		log.Println("read:", err)
 	}
-	log.Printf("recv: %s", message)
+	//log.Printf("recv: %s", message)
 
 	var rc ResponseCurrent
 	err = json.Unmarshal(message, &rc)

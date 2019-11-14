@@ -25,7 +25,7 @@ func NewOptimizer(endpoint string) *Optimizer {
 	txsCancel := make([]data.Transaction, maxCap)
 	graph := graph.Graph{
 		Graph: make(map[string]map[string]*graph.TxList),
-		Lock:  sync.Mutex{},
+		Lock:  sync.RWMutex{},
 	}
 	return &Optimizer{endpoint,txs, txsOC, txsCancel, graph}
 }
@@ -54,7 +54,6 @@ func (lo *Optimizer) ConstructTxGraph(){
 		lo.parseTransactions()
 		lo.ConstructTxGraph()
 	} else {
-		log.Println("SIZE TRANSACTIONS", len(lo.CancelTxs)+len(lo.CreateTxs))
 		lo.ConstructTxGraph()
 	}
 }
