@@ -1,16 +1,17 @@
 package graph
 
 import (
-	"github.com/gaspardpeduzzi/spring_block/data"
 	"log"
 	"strconv"
+
+	"github.com/gaspardpeduzzi/spring_block/data"
+	display "github.com/gaspardpeduzzi/spring_block/display_cli"
 )
 
 func (graph *Graph) AddOffers(tx data.Transaction) {
 	mapTx := make(map[string]*Offer)
 	var weWillPay string
 	var weWillGet string
-
 
 	for index, _ := range tx.MetaData.AffectedNodes {
 
@@ -56,29 +57,27 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 
 		}
 
-		WillGet, err := strconv.ParseFloat(priceWillGet,64)
+		WillGet, err := strconv.ParseFloat(priceWillGet, 64)
 		if err != nil {
-			log.Println("Error decoding",err)
+			log.Println("Error decoding", err)
 
 		}
 		WillPay, err := strconv.ParseFloat(priceToPay, 64)
 		if err != nil {
-			log.Println("Error decoding",err)
+			log.Println("Error decoding", err)
 
 		}
 
-
-
-		rate := WillGet/WillPay
-		vol := rate*WillPay
+		rate := WillGet / WillPay
+		vol := rate * WillPay
 
 		offer := Offer{
-			XrpTx:    tx,
-			Hash:     tx.Hash,
-			Rate:     rate,
-			Volume:   vol,
-			Pay: weWillPay,
-			Get: weWillGet,
+			XrpTx:  tx,
+			Hash:   tx.Hash,
+			Rate:   rate,
+			Volume: vol,
+			Pay:    weWillPay,
+			Get:    weWillGet,
 		}
 
 		mapTx[tx.Hash] = &offer
@@ -86,7 +85,7 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 	}
 
 	for _, v := range mapTx {
-		log.Println("ADDING", tx.Hash)
+		display.DisplayVerbose("ADDING", tx.Hash)
 		graph.addNewOffer(v.Pay, v.Get, v)
 	}
 }

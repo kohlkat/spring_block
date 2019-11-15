@@ -3,11 +3,13 @@ package data
 import (
 	"encoding/json"
 	"flag"
-	"github.com/gorilla/websocket"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
+
+	display "github.com/gaspardpeduzzi/spring_block/display_cli"
+	"github.com/gorilla/websocket"
 )
 
 // websocket address
@@ -15,9 +17,7 @@ import (
 func GetLastLedgerSeq(addr *string) int {
 	flag.Parse()
 	log.SetFlags(0)
-	log.Println("waiting for next block...")
-
-
+	display.DisplayVerbose("waiting for next block...")
 
 	// check for interrupts and cleanly close the connection
 	interrupt := make(chan os.Signal, 1)

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
 	"sync"
 
 	"github.com/gaspardpeduzzi/spring_block/data"
+	display "github.com/gaspardpeduzzi/spring_block/display_cli"
 	"github.com/gaspardpeduzzi/spring_block/graph"
 )
 
@@ -45,10 +45,10 @@ func (lo *Optimizer) ConstructTxGraph() {
 			if v.TransactionType == "OfferCreate" {
 				lo.CreateTxs = append(lo.CreateTxs, v)
 				tmp = append(tmp, v)
-				log.Println(v.Hash, v.TransactionType)
+				display.DisplayVerbose(v.Hash, v.TransactionType)
 			} else if v.TransactionType == "OfferCancel" {
 				lo.CancelTxs = append(lo.CancelTxs, v)
-				log.Println(v.Hash, v.TransactionType)
+				display.DisplayVerbose(v.Hash, v.TransactionType)
 			}
 		}
 		lo.parseTransactions(tmp)
