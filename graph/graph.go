@@ -80,6 +80,7 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 			// if len(v2.List) > 2 {
 			// 	log.Println("check", v2.List[0].Rate >= v2.List[1].Rate)
 			// }
+
 			simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
 		}
 	}

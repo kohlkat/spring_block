@@ -24,10 +24,16 @@ func main() {
 	go liquidOptimizer.ConstructTxGraph()
 
 	for {
+
 		<-c
-		offers := liquidOptimizer.Graph.GetProfitableOffers()
-		if offers != nil {
-			display.DisplayVerbose("offers", offers)
+		all_offers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+		if all_offers != nil {
+			display.DisplayVerbose("Found profitable cycle:", cycle)
+			for i, offers := range all_offers {
+				for _, offer := range offers {
+					display.DisplayVerbose(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, offer.Hash)
+				}
+			}
 			return
 		}
 	}
