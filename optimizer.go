@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-
+var smallCap = 1000
 var maxCap = 1000000
 var oldestIndex = 0
 
@@ -38,12 +38,13 @@ func (lo *Optimizer) ConstructTxGraph(){
 
 	if lastIndex > oldestIndex {
 		oldestIndex = lastIndex
-
 		txs := data.GetLedgerData(&lo.Endpoint, lastIndex)
+		tmp := make([]data.Transaction, smallCap)
 
 		for _,v := range txs {
 			if v.TransactionType == "OfferCreate" {
 				lo.CreateTxs = append(lo.CreateTxs, v)
+				tmp = append(tmp, v)
 				log.Println(v.Hash, v.TransactionType)
 			} else
 			if v.TransactionType == "OfferCancel" {
@@ -51,8 +52,7 @@ func (lo *Optimizer) ConstructTxGraph(){
 				log.Println(v.Hash, v.TransactionType)
 			}
 		}
-
-		lo.parseTransactions()
+		lo.parseTransactions(tmp)
 		lo.Channel<-1
 		lo.ConstructTxGraph()
 	} else {
@@ -60,9 +60,9 @@ func (lo *Optimizer) ConstructTxGraph(){
 	}
 }
 
-func (lo *Optimizer) parseTransactions() {
+func (lo *Optimizer) parseTransactions(transactions []data.Transaction) {
 	//log.Println("============================================================")
-	for _, tx := range lo.CreateTxs {
+	for _, tx := range transactions {
 		lo.Graph.AddOffers(tx)
 	}
 	lo.Graph = lo.Graph.SortGraphWithTxs()
