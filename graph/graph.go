@@ -62,7 +62,7 @@ func (graph *Graph) initGraph(pay string, get string) {
 }
 
 // CreateSimpleGraph : function for creating a SimpleGraph
-func (graph Graph) CreateSimpleGraph() SimplerGraph {
+func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	currencies := graph.getCurrenciesList()
 
@@ -82,7 +82,7 @@ func (graph Graph) CreateSimpleGraph() SimplerGraph {
 	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
 }
 
-func (graph Graph) getCurrenciesList() []string {
+func (graph *Graph) getCurrenciesList() []string {
 	currencies := make([]string, len(graph.Graph))
 	i := 0
 	for k := range graph.Graph {
@@ -94,7 +94,7 @@ func (graph Graph) getCurrenciesList() []string {
 }
 
 // SortGraphWithTxs : function for creating a new graph with offers sorted by rates
-func (graph Graph) SortGraphWithTxs() Graph {
+func (graph *Graph) SortGraphWithTxs() Graph {
 	sortedGraph := make(map[string]map[string]*TxList)
 	for _, v1 := range graph.Graph {
 		for _, v2 := range v1 {
