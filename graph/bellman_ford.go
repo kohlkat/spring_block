@@ -3,6 +3,7 @@ package graph
 import (
 	"fmt"
 	"math"
+	// "log"
 )
 
 // BellmanFord : Run Bellman-Ford Algorithm on the Simpler Graph with the best rates
@@ -26,7 +27,7 @@ func (graph SimplerGraph) BellmanFord() (string, map[string]string) {
 	for i := 0; i < v-1; i++ {
 		for j := 0; j < v; j++ {
 			for w := 0; w < v; w++ {
-				if dist[w] > dist[j]+graph.Graph[graph.Currencies[j]][graph.Currencies[w]] {
+				if dist[w] > dist[j] + graph.Graph[graph.Currencies[j]][graph.Currencies[w]] {
 					dist[w] = dist[j] + graph.Graph[graph.Currencies[j]][graph.Currencies[w]]
 					predecessors[graph.Currencies[w]] = graph.Currencies[j] // indice to check
 				}
@@ -35,9 +36,9 @@ func (graph SimplerGraph) BellmanFord() (string, map[string]string) {
 	}
 
 	// Find negative cycle
-	for i := 0; i < v-1; i++ {
+	for i := 0; i < v; i++ {
 		for j := 0; j < v; j++ {
-			if dist[j] > dist[i]+graph.Graph[graph.Currencies[i]][graph.Currencies[j]] {
+			if dist[j] > dist[i] + graph.Graph[graph.Currencies[i]][graph.Currencies[j]] {
 				fmt.Println("Arbitrage opportunity")
 				return graph.Currencies[j], predecessors
 				// INSERT CYCLE OUTPUT

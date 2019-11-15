@@ -1,4 +1,9 @@
 package graph
+
+// import (
+// 	"log"
+// )
+
 func GetCycle(asset string, predecessors map[string]string) []string {
 
   cycle := make([]string, len(predecessors))
@@ -13,14 +18,14 @@ func GetCycle(asset string, predecessors map[string]string) []string {
   // Removing all asset before the cycle
   tmp := make([]string, len(cycle))
   copy(tmp, cycle)
-  for i, b := range tmp {
+  for _, b := range tmp {
     if b != next_asset {
-      cycle = remove(cycle, i)
+      cycle = remove(cycle, 0)
     }
   }
 
   // Remove first occurrence of next_asset
-  remove(cycle, 0)
+  // remove(cycle, 0)
 
   return cycle
 }

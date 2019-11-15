@@ -4,8 +4,9 @@ import (
 	"math"
 	"sort"
 	"sync"
-
+	// "log"
 	"github.com/gaspardpeduzzi/spring_block/data"
+
 )
 
 var capacityList = 1000000
@@ -66,12 +67,18 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	currencies := graph.getCurrenciesList()
 
-	simpleGraph := make(map[string]map[string]float64)
+	var simpleGraph = map[string]map[string]float64{}
 
+	for i, _ := range graph.Graph {
+		simpleGraph[i] = map[string]float64{}
+		// for j, _ := range v1 {
+		// 	simpleGraph[i][j] = 0
+		// }
+	}
 
 	for k1, v1 := range graph.Graph {
 		for k2, v2 := range v1 {
-			simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
+			simpleGraph[k1][k2] = -math.Log(v2.List[len(v2.List)-1].Rate)
 		}
 	}
 	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
