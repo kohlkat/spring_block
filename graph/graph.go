@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"math"
 	"sort"
 	"sync"
 
@@ -13,10 +14,11 @@ type Graph struct {
 	Lock  sync.Mutex
 }
 
-// SimplerGraph : Data structure for graph of best offers
+// SimplerGraph : Data structure for graph of best offers (nxn grid, -log(edge))
 type SimplerGraph struct {
-	Graph map[string]map[string]float64
-	Lock  sync.Mutex
+	Graph      map[string]map[string]float64
+	Currencies []string
+	Lock       sync.Mutex
 }
 
 // TxList : Data structure for list of offers
@@ -35,14 +37,33 @@ type Offer struct {
 // CreateSimpleGraph : function for creating a SimpleGraph
 func (graph Graph) CreateSimpleGraph() SimplerGraph {
 
+	currencies := graph.getCurrenciesList()
+
 	simpleGraph := make(map[string]map[string]float64)
+
+	for _, i := range currencies {
+		for _, j := range currencies {
+			simpleGraph[i][j] = 0
+		}
+	}
 
 	for k1, v1 := range graph.Graph {
 		for k2, v2 := range v1 {
-			simpleGraph[k1][k2] = v2.List[0].Rate
+			simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
 		}
 	}
-	return SimplerGraph{Graph: simpleGraph, Lock: sync.Mutex{}}
+	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
+}
+
+func (graph Graph) getCurrenciesList() []string {
+	currencies := make([]string, len(graph.Graph))
+	i := 0
+	for k := range graph.Graph {
+		currencies[i] = k
+		i++
+	}
+
+	return currencies
 }
 
 // SortGraphWithTxs : function for creating a new graph with offers sorted by rates
