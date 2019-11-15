@@ -1,4 +1,4 @@
-# XRPL market optimization software
+# Jack the Rippler: XRPL market optimization software
 
 
 This program uses go, try  
