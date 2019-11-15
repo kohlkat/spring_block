@@ -6,17 +6,17 @@ import (
 )
 
 // BellmanFord : Run Bellman-Ford Algorithm on the Simpler Graph with the best rates
-func BellmanFord(graph SimplerGraph) ([]float64, []string) {
+func (graph SimplerGraph) BellmanFord() (string, map[string]string) {
 
 	v := len(graph.Currencies)
 
 	// Initiate distances and predecessors array
 	dist := make([]float64, v)
-	predecessors := make([]string, v)
+	predecessors := make(map[string]string)
 
 	for i := 0; i < v; i++ {
 		dist[i] = math.MaxFloat64
-		predecessors[i] = ""
+		predecessors[graph.Currencies[i]] = ""
 	}
 
 	// initialize distance of source as 0
@@ -28,7 +28,7 @@ func BellmanFord(graph SimplerGraph) ([]float64, []string) {
 			for w := 0; w < v; w++ {
 				if dist[w] > dist[j]+graph.Graph[graph.Currencies[j]][graph.Currencies[w]] {
 					dist[w] = dist[j] + graph.Graph[graph.Currencies[j]][graph.Currencies[w]]
-					predecessors[w] = graph.Currencies[j] // indice to check
+					predecessors[graph.Currencies[w]] = graph.Currencies[j] // indice to check
 				}
 			}
 		}
@@ -39,12 +39,13 @@ func BellmanFord(graph SimplerGraph) ([]float64, []string) {
 		for j := 0; j < v; j++ {
 			if dist[j] > dist[i]+graph.Graph[graph.Currencies[i]][graph.Currencies[j]] {
 				fmt.Println("Arbitrage opportunity")
+				return graph.Currencies[j], predecessors
 				// INSERT CYCLE OUTPUT
 			}
 		}
 
 	}
 
-	return dist, predecessors
+	return "", nil
 
 }

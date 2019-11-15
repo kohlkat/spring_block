@@ -12,20 +12,27 @@ func CheckProfitable(edges map[int][]Offer) bool {
   return product > 1
 }
 
-func (graph *Graph) get_profitable_offers(assets []string) (map[int][]Offer) {
+func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
+
+  asset, predecessors := graph.CreateSimpleGraph().BellmanFord()
+	if asset == "" {
+    return nil
+  }
+
+	cycle := GetCycle(asset, predecessors)
 
   // Make a copy of the graph
   res := make(map[int][]Offer)
   quantities := make(map[int]float64)
   keys_count := len(graph.Graph)
 
-  for i, _ := range assets {
+  for i, _ := range cycle {
     // Get best edge
-    edge := graph.Graph[assets[i]][assets[(i+1)%keys_count]].List[0]
+    edge := graph.Graph[cycle[i]][cycle[(i+1)%keys_count]].List[0]
     // Update total quantities for that edge
     quantities[i] = edge.Volume
     // Remove used edge from graph
-    graph.Graph[assets[i]][assets[(i+1)%keys_count]].List = graph.Graph[assets[i]][assets[(i+1)%keys_count]].List[1:]
+    graph.Graph[cycle[i]][cycle[(i+1)%keys_count]].List = graph.Graph[cycle[i]][cycle[(i+1)%keys_count]].List[1:]
     // Update selected edges
     res[i] = make([]Offer, 1000000)
     res[i][0] = *edge
@@ -48,7 +55,7 @@ func (graph *Graph) get_profitable_offers(assets []string) (map[int][]Offer) {
     var bottleneck_edge *int
 
     for i, v := range quantities {
-      if (v == minQuantity && len(graph.Graph[assets[i]][assets[(i+1)%keys_count]].List) > 0) {
+      if (v == minQuantity && len(graph.Graph[cycle[i]][cycle[(i+1)%keys_count]].List) > 0) {
         *bottleneck_edge = i
       }
     }
@@ -57,9 +64,9 @@ func (graph *Graph) get_profitable_offers(assets []string) (map[int][]Offer) {
       return res
     } else {
       // Getting next edges
-      copy(next_edges, graph.Graph[assets[*bottleneck_edge]][assets[(*bottleneck_edge+1)%keys_count]].List)
+      copy(next_edges, graph.Graph[cycle[*bottleneck_edge]][cycle[(*bottleneck_edge+1)%keys_count]].List)
       // Removing first one if existing
-      graph.Graph[assets[*bottleneck_edge]][assets[(*bottleneck_edge+1)%keys_count]].List = graph.Graph[assets[*bottleneck_edge]][assets[(*bottleneck_edge+1)%keys_count]].List[1:]
+      graph.Graph[cycle[*bottleneck_edge]][cycle[(*bottleneck_edge+1)%keys_count]].List = graph.Graph[cycle[*bottleneck_edge]][cycle[(*bottleneck_edge+1)%keys_count]].List[1:]
     }
 
     next_edge := next_edges[0]

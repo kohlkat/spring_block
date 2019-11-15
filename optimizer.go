@@ -16,10 +16,11 @@ type Optimizer struct {
 	Transactions []data.Transaction
 	CreateTxs    []data.Transaction
 	CancelTxs    []data.Transaction
-	Graph 		 graph.Graph
+	Graph 		 	 graph.Graph
+	Channel    	 chan int
 }
 
-func NewOptimizer(endpoint string) *Optimizer {
+func NewOptimizer(endpoint string, c chan int) *Optimizer {
 	txs := make([]data.Transaction, maxCap)
 	txsOC := make([]data.Transaction, maxCap)
 	txsCancel := make([]data.Transaction, maxCap)
@@ -27,7 +28,7 @@ func NewOptimizer(endpoint string) *Optimizer {
 		Graph: make(map[string]map[string]*graph.TxList),
 		Lock:  sync.RWMutex{},
 	}
-	return &Optimizer{endpoint,txs, txsOC, txsCancel, graph}
+	return &Optimizer{endpoint,txs, txsOC, txsCancel, graph,c}
 }
 
 
@@ -52,6 +53,7 @@ func (lo *Optimizer) ConstructTxGraph(){
 		}
 
 		lo.parseTransactions()
+		lo.Channel<-1
 		lo.ConstructTxGraph()
 	} else {
 		lo.ConstructTxGraph()
@@ -62,10 +64,5 @@ func (lo *Optimizer) parseTransactions() {
 	//log.Println("============================================================")
 	for _, tx := range lo.CreateTxs {
 		lo.Graph.AddOffers(tx)
-
 	}
 }
-
-
-
-

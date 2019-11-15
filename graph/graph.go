@@ -68,11 +68,6 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	simpleGraph := make(map[string]map[string]float64)
 
-	for _, i := range currencies {
-		for _, j := range currencies {
-			simpleGraph[i][j] = 0
-		}
-	}
 
 	for k1, v1 := range graph.Graph {
 		for k2, v2 := range v1 {
