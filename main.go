@@ -18,9 +18,14 @@ func main() {
 
 	for {
 			<-c
-			offers := liquidOptimizer.Graph.GetProfitableOffers()
-			if offers != nil {
-				log.Println("Found offers! ", offers)
+			all_offers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+			if all_offers != nil {
+				log.Println("Found profitable cycle:", cycle)
+				for i, offers := range all_offers {
+					for _, offer := range offers {
+						log.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, offer.Hash)
+					}
+				}
 				return
 			}
 	}

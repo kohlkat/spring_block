@@ -86,7 +86,7 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 	}
 
 	for _, v := range mapTx {
-		log.Println("ADDING", tx.Hash)
+		// log.Println("ADDING", tx.Hash)
 		graph.addNewOffer(v.Pay, v.Get, v)
 	}
 }

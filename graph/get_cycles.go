@@ -1,12 +1,12 @@
 package graph
 
-import (
-	"log"
-)
+// import (
+// 	"log"
+// )
 
 func GetCycle(asset string, predecessors map[string]string) []string {
 
-  log.Println("predecessors", asset, predecessors)
+  // log.Println("predecessors", asset, predecessors)
 
   cycle := make([]string, 0)
   next_asset := asset

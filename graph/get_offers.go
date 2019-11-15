@@ -8,12 +8,12 @@ import (
 func CheckProfitable(edges map[int][]Offer) bool {
   product := 1.0
   for _, v := range edges {
-    product = product * v[len(v)-1].Rate
+    product = product * v[0].Rate
   }
   return product > 1
 }
 
-func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
+func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 
   // log.Println("XRP", graph.Graph["XRP"])
   // log.Println(graph.CreateSimpleGraph().Graph["XRP"])
@@ -21,7 +21,7 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
   asset, predecessors := graph.CreateSimpleGraph().BellmanFord()
 	if asset == "" {
     log.Println("No positive cycle")
-    return nil
+    return nil, nil
   }
 
 	cycle := GetCycle(asset, predecessors)
@@ -31,14 +31,12 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
   quantities := make(map[int]float64)
   cycle_count := len(cycle)
 
-  log.Println("cycle", cycle)
-
   for i, _ := range cycle {
     // Get best edge
     // log.Println("graph.Graph[cycle[i]]", graph.Graph[cycle[i]], len(graph.Graph), len(graph.Graph[cycle[i]]))
     edges := graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]]
 
-    if edges == nil || edges.List[0] == nil {
+    if edges == nil || len(edges.List) == 0 {
       panic("Should never happen")
     }
 
@@ -48,8 +46,8 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
     // Remove used edge from graph
     graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]].List = graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]].List[1:]
     // Update selected edges
-    res[i] = make([]Offer, 1000000)
-    res[i][0] = *edge
+    res[i] = make([]Offer, 0)
+    res[i] = append(res[i], *edge)
   }
 
   if !CheckProfitable(res) {
@@ -64,30 +62,34 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
       }
     }
 
-    next_edges := make([]*Offer, 100)
 
-    var bottleneck_edge *int
+    bottleneck_edge := -1
 
     for i, v := range quantities {
-      if (v == minQuantity && len(graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]].List) > 0) {
-        *bottleneck_edge = i
+      edges := graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]]
+      if (v == minQuantity && edges != nil && len(edges.List) > 0) {
+        bottleneck_edge = i
       }
     }
 
-    if bottleneck_edge == nil {
-      return res
+    next_edges := make([]*Offer, 100)
+
+    if bottleneck_edge == -1 {
+      return res, cycle
     } else {
       // Getting next edges
-      copy(next_edges, graph.Graph[cycle[*bottleneck_edge]][cycle[(*bottleneck_edge+1)%cycle_count]].List)
+      copy(next_edges, graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List)
       // Removing first one if existing
-      graph.Graph[cycle[*bottleneck_edge]][cycle[(*bottleneck_edge+1)%cycle_count]].List = graph.Graph[cycle[*bottleneck_edge]][cycle[(*bottleneck_edge+1)%cycle_count]].List[1:]
+      // if len(graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List) > 1 {
+        graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List = graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List[1:]
+      // }
     }
 
-    next_edge := next_edges[capacityList-1]
+    next_edge := next_edges[0]
 
     product := 1.0
     for i, edges := range res {
-      if *bottleneck_edge == i {
+      if bottleneck_edge == i {
           product = product * next_edge.Rate
       } else {
           product = product * edges[len(edges)-1].Rate
@@ -95,13 +97,13 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
     }
 
     if product > 1 {
-      quantities[*bottleneck_edge] += next_edge.Volume
-      res[*bottleneck_edge] = append(res[*bottleneck_edge], *next_edge)
+      quantities[bottleneck_edge] += next_edge.Volume
+      res[bottleneck_edge] = append(res[bottleneck_edge], *next_edge)
     } else {
-      return res
+      return res, cycle
     }
 
   }
 
-  return nil
+  return nil, nil
 }
