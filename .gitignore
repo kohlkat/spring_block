@@ -85,4 +85,7 @@ $RECYCLE.BIN/
 # Intellij
 .idea
 
+# Executable
+spring_block
+
 
