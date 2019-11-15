@@ -65,4 +65,5 @@ func (lo *Optimizer) parseTransactions() {
 	for _, tx := range lo.CreateTxs {
 		lo.Graph.AddOffers(tx)
 	}
+	lo.Graph = lo.Graph.SortGraphWithTxs()
 }

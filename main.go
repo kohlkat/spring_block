@@ -19,7 +19,10 @@ func main() {
 	for {
 			<-c
 			offers := liquidOptimizer.Graph.GetProfitableOffers()
-			log.Println(offers)
+			if offers != nil {
+				log.Println("Found offers! ", offers)
+				return
+			}
 	}
 
 

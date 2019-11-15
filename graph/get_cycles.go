@@ -1,12 +1,14 @@
 package graph
 
-// import (
-// 	"log"
-// )
+import (
+	"log"
+)
 
 func GetCycle(asset string, predecessors map[string]string) []string {
 
-  cycle := make([]string, len(predecessors))
+  log.Println("predecessors", asset, predecessors)
+
+  cycle := make([]string, 0)
   next_asset := asset
 
   // Going backward on best predecessors until duplicate is found
@@ -21,6 +23,8 @@ func GetCycle(asset string, predecessors map[string]string) []string {
   for _, b := range tmp {
     if b != next_asset {
       cycle = remove(cycle, 0)
+    } else {
+      break
     }
   }
 

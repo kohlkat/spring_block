@@ -4,12 +4,12 @@ import (
 	"math"
 	"sort"
 	"sync"
-	// "log"
+	"log"
 	"github.com/gaspardpeduzzi/spring_block/data"
 
 )
 
-var capacityList = 1000000
+var capacityList = 0
 
 // Graph : Data structure for graph of offers
 type Graph struct {
@@ -69,16 +69,19 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	var simpleGraph = map[string]map[string]float64{}
 
-	for i, _ := range graph.Graph {
+	for _, i := range currencies {
 		simpleGraph[i] = map[string]float64{}
-		// for j, _ := range v1 {
-		// 	simpleGraph[i][j] = 0
-		// }
+		for _, j := range currencies {
+			simpleGraph[i][j] = math.MaxFloat64
+		}
 	}
 
 	for k1, v1 := range graph.Graph {
 		for k2, v2 := range v1 {
-			simpleGraph[k1][k2] = -math.Log(v2.List[len(v2.List)-1].Rate)
+			if len(v2.List) > 2 {
+				// log.Println("check", v2.List[0].Rate > v2.List[1].Rate)
+			}
+			simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
 		}
 	}
 	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
@@ -98,11 +101,15 @@ func (graph *Graph) getCurrenciesList() []string {
 // SortGraphWithTxs : function for creating a new graph with offers sorted by rates
 func (graph *Graph) SortGraphWithTxs() Graph {
 	sortedGraph := make(map[string]map[string]*TxList)
-	for _, v1 := range graph.Graph {
-		for _, v2 := range v1 {
-			sort.Slice(v2.List, func(i, j int) bool {
-				return v2.List[i].Rate < v2.List[j].Rate
+
+	for k1, v1 := range graph.Graph {
+		sortedGraph[k1] = map[string]*TxList{}
+		for k2, v2 := range v1 {
+			list := v2.List
+			sort.Slice(list, func(i, j int) bool {
+				return v2.List[i].Rate > v2.List[j].Rate
 			})
+			sortedGraph[k1][k2] = &TxList{List: list}
 		}
 	}
 	return Graph{Graph: sortedGraph, Lock: sync.RWMutex{}}

@@ -15,8 +15,12 @@ func CheckProfitable(edges map[int][]Offer) bool {
 
 func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
 
+  // log.Println("XRP", graph.Graph["XRP"])
+  // log.Println(graph.CreateSimpleGraph().Graph["XRP"])
+
   asset, predecessors := graph.CreateSimpleGraph().BellmanFord()
 	if asset == "" {
+    log.Println("No positive cycle")
     return nil
   }
 
@@ -31,14 +35,14 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer) {
 
   for i, _ := range cycle {
     // Get best edge
-    log.Println("graph.Graph[cycle[i]]", graph.Graph[cycle[i]])
+    // log.Println("graph.Graph[cycle[i]]", graph.Graph[cycle[i]], len(graph.Graph), len(graph.Graph[cycle[i]]))
     edges := graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]]
 
-    if edges == nil || len(edges.List) > 0 {
+    if edges == nil || edges.List[0] == nil {
       panic("Should never happen")
     }
 
-    edge := edges.List[capacityList-1]
+    edge := edges.List[0]
     // Update total quantities for that edge
     quantities[i] = edge.Volume
     // Remove used edge from graph
