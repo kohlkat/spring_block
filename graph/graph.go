@@ -4,9 +4,8 @@ import (
 	"math"
 	"sort"
 	"sync"
-	"log"
-	"github.com/gaspardpeduzzi/spring_block/data"
 
+	"github.com/gaspardpeduzzi/spring_block/data"
 )
 
 var capacityList = 0
@@ -78,9 +77,9 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	for k1, v1 := range graph.Graph {
 		for k2, v2 := range v1 {
-			if len(v2.List) > 2 {
-				log.Println("check", v2.List[0].Rate > v2.List[1].Rate)
-			}
+			// if len(v2.List) > 2 {
+			// 	log.Println("check", v2.List[0].Rate >= v2.List[1].Rate)
+			// }
 			simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
 		}
 	}
@@ -99,9 +98,8 @@ func (graph *Graph) getCurrenciesList() []string {
 }
 
 // SortGraphWithTxs : function for creating a new graph with offers sorted by rates
-func (graph *Graph) SortGraphWithTxs() Graph {
+func (graph *Graph) SortGraphWithTxs() {
 	sortedGraph := make(map[string]map[string]*TxList)
-
 	for k1, v1 := range graph.Graph {
 		sortedGraph[k1] = map[string]*TxList{}
 		for k2, v2 := range v1 {
@@ -109,8 +107,12 @@ func (graph *Graph) SortGraphWithTxs() Graph {
 			sort.Slice(list, func(i, j int) bool {
 				return v2.List[i].Rate > v2.List[j].Rate
 			})
-			sortedGraph[k1][k2] = &TxList{List: list}
+
+			//sortedGraph[k1][k2] = &TxList{List: list}
+			copy(graph.Graph[k1][k2].List, list)
+
 		}
 	}
-	return Graph{Graph: sortedGraph, Lock: sync.RWMutex{}}
+
+	//return Graph{Graph: sortedGraph, Lock: graph.Lock}
 }
