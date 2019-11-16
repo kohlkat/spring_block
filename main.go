@@ -2,39 +2,42 @@ package main
 
 import (
 	"flag"
-	"strconv"
-
-	"github.com/gaspardpeduzzi/spring_block/data"
-	display "github.com/gaspardpeduzzi/spring_block/display_cli"
+	display "github.com/gaspardpeduzzi/spring_block/display"
+	"fmt"
 )
 
 func main() {
+
 	//go s.LaunchServer()
+
 	var addr = flag.String("addr", "s1.ripple.com:51233", "http service address")
-	var verb = flag.Bool("verb", true, "Display more information")
+	var verb = flag.Bool("verb", false, "Display more information")
 	flag.Parse()
 	display.VERBOSE = *verb
-
-	// Init Display
 	display.Init()
-	display.DisplayVerbose("Checking last sequence number ", strconv.Itoa(data.GetLastLedgerSeq(addr)))
+
 
 	c := make(chan int)
 	liquidOptimizer := NewOptimizer(*addr, c)
 	go liquidOptimizer.ConstructTxGraph()
 
 	for {
-
+		display.DisplayVerbose("waiting for next block...")
 		<-c
-		all_offers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
-		if all_offers != nil {
-			display.DisplayVerbose("Found profitable cycle:", cycle)
-			for i, offers := range all_offers {
+		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+		//returns map[int][]Offer, []string
+
+		if allOffers != nil {
+			//Should never be displayed in verbose mode :)
+			fmt.Println("Found profitable cycle:", cycle)
+			fmt.Println("====================================================================================")
+			for i, offers := range allOffers {
 				for _, offer := range offers {
-					display.DisplayVerbose(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, offer.Hash)
+					fmt.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.Hash, "Volume:", offer.Volume)
 				}
 			}
-			return
+			fmt.Println("====================================================================================")
+			//return
 		}
 	}
 

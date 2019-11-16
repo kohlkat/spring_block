@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gaspardpeduzzi/spring_block/data"
-	display "github.com/gaspardpeduzzi/spring_block/display_cli"
 )
 
 func (graph *Graph) AddOffers(tx data.Transaction) {
@@ -85,7 +84,8 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 	}
 
 	for _, v := range mapTx {
-		display.DisplayVerbose("ADDING", tx.Hash)
+		//very verbose!
+		//display.DisplayVerbose("ADDING", tx.Hash)
 		graph.addNewOffer(v.Pay, v.Get, v)
 	}
 }

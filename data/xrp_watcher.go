@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 
-	display "github.com/gaspardpeduzzi/spring_block/display_cli"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,7 +16,7 @@ import (
 func GetLastLedgerSeq(addr *string) int {
 	flag.Parse()
 	log.SetFlags(0)
-	display.DisplayVerbose("waiting for next block...")
+
 
 	// check for interrupts and cleanly close the connection
 	interrupt := make(chan os.Signal, 1)

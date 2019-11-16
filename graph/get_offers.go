@@ -1,12 +1,10 @@
 package graph
 
 import (
-	"log"
 	"math"
 )
 
 func CheckProfitable(edges map[int][]Offer) bool {
-
 	product := 1.0
 	for _, v := range edges {
 		product = product * v[0].Rate
@@ -15,14 +13,10 @@ func CheckProfitable(edges map[int][]Offer) bool {
 }
 
 func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
-
-	// log.Println("XRP", graph.Graph["XRP"])
-	// log.Println(graph.CreateSimpleGraph().Graph["XRP"])
-
 	asset, predecessors := graph.CreateSimpleGraph().BellmanFord()
 	if asset == "" {
-
-		log.Println("No positive cycle")
+		//very verbose
+		//display.DisplayVerbose("No positive cycle")
 		return nil, nil
 	}
 
