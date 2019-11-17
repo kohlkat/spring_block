@@ -8,11 +8,26 @@ import (
 )
 
 func (graph *Graph) AddOffers(tx data.Transaction) {
-	mapTx := make(map[string]*Offer)
-	var weWillPay string
-	var weWillGet string
+	offers  := graph.parseOfferCreate(tx)
+	for _, v := range offers {
+		//very verbose!
+		//display.DisplayVerbose("ADDING", tx.Hash)
+		graph.addNewOffer(v.Pay, v.Get, &v)
+	}
+}
 
-	for index, _ := range tx.MetaData.AffectedNodes {
+
+func (graph *Graph) parseOfferCancel (tx data.Transaction){
+	for _, test := range tx.MetaData.AffectedNodes{
+		log.Println(test.DeletedNode.FinalFields.PreviousTxnID)
+	}
+}
+
+func (graph *Graph) parseOfferCreate (tx data.Transaction) []Offer {
+	resultingOffers := make([]Offer, 1)
+	for range tx.MetaData.AffectedNodes{
+		var weWillPay string
+		var weWillGet string
 
 		priceToPay := ""
 		priceWillGet := ""
@@ -34,12 +49,9 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 			priceToPay = object
 		default:
 			log.Println("unexpected type %T", object)
-			log.Println(index)
 
 		}
-
 		switch objectTG := takerGets.(type) {
-
 		case map[string]interface{}:
 			//We will get a given currency
 			weWillGet = objectTG["currency"].(string)
@@ -52,8 +64,6 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 			//log.Print("TAKER GETS value ", DropToXrp(float64(price)), " XRP or ", DropToPriceInUSD(price), " USD" )
 		default:
 			log.Println("unexpected type %T", objectTG)
-			log.Println(index)
-
 		}
 
 		WillGet, err := strconv.ParseFloat(priceWillGet, 64)
@@ -61,6 +71,7 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 			log.Println("Error decoding", err)
 
 		}
+
 		WillPay, err := strconv.ParseFloat(priceToPay, 64)
 		if err != nil {
 			log.Println("Error decoding", err)
@@ -77,15 +88,12 @@ func (graph *Graph) AddOffers(tx data.Transaction) {
 			Volume: vol,
 			Pay:    weWillPay,
 			Get:    weWillGet,
+			Active: true,
 		}
 
-		mapTx[tx.Hash] = &offer
+		graph.ActiveOffers[offer.Hash] = &offer
 
+		resultingOffers = append(resultingOffers, offer)
 	}
-
-	for _, v := range mapTx {
-		//very verbose!
-		//display.DisplayVerbose("ADDING", tx.Hash)
-		graph.addNewOffer(v.Pay, v.Get, v)
-	}
+	return resultingOffers
 }

@@ -44,41 +44,42 @@ type Transaction struct {
 	TxnSignature    string `json:"TxnSignature"`
 	Hash            string `json:"hash"`
 	MetaData        struct {
-		AffectedNodes []struct {
-			CreatedNode struct {
-				LedgerEntryType string `json:"LedgerEntryType"`
-				LedgerIndex     string `json:"LedgerIndex"`
-				NewFields       struct {
-					Account       string `json:"Account"`
-					BookDirectory string `json:"BookDirectory"`
-					Sequence      int    `json:"Sequence"`
-					TakerGets     interface{}
-					TakerPays interface{} `json:"TakerPays"`
-				} `json:"NewFields"`
-			} `json:"CreatedNode,omitempty"`
-			ModifiedNode struct {
-				FinalFields struct {
-					Flags     int    `json:"Flags"`
-					Owner     string `json:"Owner"`
-					RootIndex string `json:"RootIndex"`
-				} `json:"FinalFields"`
-				LedgerEntryType string `json:"LedgerEntryType"`
-				LedgerIndex     string `json:"LedgerIndex"`
-			} `json:"ModifiedNode,omitempty"`
-			DeletedNode struct {
-				FinalFields struct {
-					ExchangeRate      string `json:"ExchangeRate"`
-					Flags             int    `json:"Flags"`
-					RootIndex         string `json:"RootIndex"`
-					TakerGetsCurrency string `json:"TakerGetsCurrency"`
-					TakerGetsIssuer   string `json:"TakerGetsIssuer"`
-					TakerPaysCurrency string `json:"TakerPaysCurrency"`
-					TakerPaysIssuer   string `json:"TakerPaysIssuer"`
-				} `json:"FinalFields"`
-				LedgerEntryType string `json:"LedgerEntryType"`
-				LedgerIndex     string `json:"LedgerIndex"`
-			} `json:"DeletedNode,omitempty"`
-		} `json:"AffectedNodes"`
+		AffectedNodes  []struct {
+		CreatedNode struct {
+		LedgerEntryType string `json:"LedgerEntryType"`
+		LedgerIndex     string `json:"LedgerIndex"`
+		NewFields       struct {
+		Account       string `json:"Account"`
+		BookDirectory string `json:"BookDirectory"`
+		Sequence      int    `json:"Sequence"`
+		TakerGets     interface{}
+		TakerPays interface{} `json:"TakerPays"`
+	} `json:"NewFields"`
+	} `json:"CreatedNode,omitempty"`
+		ModifiedNode struct {
+		FinalFields struct {
+		Flags     int    `json:"Flags"`
+		Owner     string `json:"Owner"`
+		RootIndex string `json:"RootIndex"`
+	} `json:"FinalFields"`
+		LedgerEntryType string `json:"LedgerEntryType"`
+		LedgerIndex     string `json:"LedgerIndex"`
+	} `json:"ModifiedNode,omitempty"`
+		DeletedNode struct {
+		FinalFields struct {
+		ExchangeRate      string `json:"ExchangeRate"`
+		Flags             int    `json:"Flags"`
+		RootIndex         string `json:"RootIndex"`
+		TakerGetsCurrency string `json:"TakerGetsCurrency"`
+		TakerGetsIssuer   string `json:"TakerGetsIssuer"`
+		TakerPaysCurrency string `json:"TakerPaysCurrency"`
+		TakerPaysIssuer   string `json:"TakerPaysIssuer"`
+		PreviousTxnID	  string  `json:"PreviousTxnID"`
+	} `json:"FinalFields"`
+		LedgerEntryType string `json:"LedgerEntryType"`
+		LedgerIndex     string `json:"LedgerIndex"`
+	} `json:"DeletedNode,omitempty"`
+	} `json:"AffectedNodes"`
 		TransactionIndex  int    `json:"TransactionIndex"`
 		TransactionResult string `json:"TransactionResult"`
 	} `json:"metaData"`

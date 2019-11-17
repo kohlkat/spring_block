@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"log"
 	"math"
 	"sort"
 	"sync"
@@ -13,6 +14,7 @@ var capacityList = 0
 // Graph : Data structure for graph of offers
 type Graph struct {
 	Graph map[string]map[string]*TxList
+	ActiveOffers 	 map[string]*Offer
 	Lock  sync.RWMutex
 }
 
@@ -36,6 +38,7 @@ type Offer struct {
 	Hash   string
 	Pay    string
 	Get    string
+	Active bool
 }
 
 func (graph *Graph) addNewOffer(pay string, get string, offer *Offer) {
@@ -85,6 +88,25 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 		}
 	}
 	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
+}
+
+
+func (graph *Graph) DeleteOffers(transactions []string){
+	for _, tx := range transactions {
+		graph.Lock.Lock()
+		offer := graph.ActiveOffers[tx]
+		for i, v  := range graph.Graph[offer.Pay][offer.Get].List {
+			log.Println(i)
+			if v.Hash == offer.Hash {
+				v = nil
+				log.Println("DELETED OFFER")
+			}
+		}
+		if len(graph.Graph[offer.Pay][offer.Get].List) == 0 {
+			graph.Graph[offer.Pay][offer.Get] = nil
+		}
+		graph.Lock.Unlock()
+	}
 }
 
 func (graph *Graph) getCurrenciesList() []string {
