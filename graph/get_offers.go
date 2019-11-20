@@ -2,6 +2,7 @@ package graph
 
 import (
 	"math"
+	"log"
 )
 
 func CheckProfitable(edges map[int][]Offer) bool {
@@ -9,11 +10,14 @@ func CheckProfitable(edges map[int][]Offer) bool {
 	for _, v := range edges {
 		product = product * v[0].Rate
 	}
+	log.Println("product", product)
 	return product > 1
 }
 
 func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
-	asset, predecessors := graph.CreateSimpleGraph().BellmanFord()
+
+	simpleGraph := graph.CreateSimpleGraph()
+	asset, predecessors := simpleGraph.BellmanFord()
 	if asset == "" {
 		//very verbose
 		//display.DisplayVerbose("No positive cycle")
@@ -21,6 +25,10 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 	}
 
 	cycle := GetCycle(asset, predecessors)
+	if cycle == nil {
+		return nil, nil
+	}
+
 
 	// Make a copy of the graph
 	res := make(map[int][]Offer)
@@ -33,6 +41,9 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 		edges := graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]]
 
 		if edges == nil || len(edges.List) == 0 {
+			log.Println("predecessors", predecessors)
+			log.Println(cycle, cycle[i], cycle[(i+1)%cycle_count], edges)
+			log.Println("simple", simpleGraph.Graph[cycle[i]][cycle[(i+1)%cycle_count]])
 			panic("Should never happen")
 		}
 
@@ -47,6 +58,7 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 	}
 
 	if !CheckProfitable(res) {
+		log.Println("res", res)
 		panic("Positive cycle doesn't exist.")
 	}
 
@@ -74,10 +86,9 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 		} else {
 			// Getting next edges
 			copy(next_edges, graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List)
-			// Removing first one if existing
-			// if len(graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List) > 1 {
+
+			// Removing first one
 			graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List = graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List[1:]
-			// }
 		}
 
 		next_edge := next_edges[0]

@@ -3,7 +3,7 @@ package graph
 import (
 	"fmt"
 	"math"
-	// "log"
+	"log"
 )
 
 // BellmanFord : Run Bellman-Ford Algorithm on the Simpler Graph with the best rates
@@ -17,7 +17,7 @@ func (graph SimplerGraph) BellmanFord() (string, map[string]string) {
 
 	for i := 0; i < v; i++ {
 		dist[i] = math.MaxFloat64
-		predecessors[graph.Currencies[i]] = ""
+		// predecessors[graph.Currencies[i]] = ""
 	}
 
 	// initialize distance of source as 0
@@ -28,6 +28,9 @@ func (graph SimplerGraph) BellmanFord() (string, map[string]string) {
 		for j := 0; j < v; j++ {
 			for w := 0; w < v; w++ {
 				if j != w && dist[w] > dist[j] + graph.Graph[graph.Currencies[j]][graph.Currencies[w]] {
+					if graph.Graph[graph.Currencies[j]][graph.Currencies[w]] == math.MaxFloat64 {
+						log.Println("not okay", dist[w], dist[j])
+					}
 					// log.Println(graph.Currencies[j], graph.Currencies[w], graph.Graph[graph.Currencies[j]], graph.Graph[graph.Currencies[j]][graph.Currencies[w]])
 					dist[w] = dist[j] + graph.Graph[graph.Currencies[j]][graph.Currencies[w]]
 					predecessors[graph.Currencies[w]] = graph.Currencies[j] // indice to check

@@ -8,7 +8,7 @@ import (
 )
 
 func (graph *Graph) AddOffers(tx data.Transaction) {
-	offers  := graph.parseOfferCreate(tx)
+	offers := graph.parseOfferCreate(tx)
 	for _, v := range offers {
 		//very verbose!
 		//display.DisplayVerbose("ADDING", tx.Hash)
