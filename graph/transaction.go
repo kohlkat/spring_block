@@ -66,7 +66,7 @@ func (graph *Graph) ParseOfferCreate (tx data.Transaction) []Offer {
 					Issuer:			  actualIssuer,
 				}
 				//display.DisplayVerbose("ACTUAL ISSUER", actualIssuer)
-				graph.insertNewOfferToAccount(newOffer)
+				// graph.insertNewOfferToAccount(newOffer)
 				graph.insertNewOffer(newOffer)
 			}
 

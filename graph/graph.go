@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"log"
+	// "log"
 	"math"
 	"sort"
 	"sync"
@@ -10,13 +10,6 @@ import (
 )
 
 var capacityList = 0
-
-// Graph : Data structure for graph of offers
-type Graph struct {
-	Graph map[string]map[string]*TxList
-	ActiveOffers 	 map[string]*Offer
-	Lock  sync.RWMutex
-}
 
 // SimplerGraph : Data structure for graph of best offers (nxn grid, -log(edge))
 type SimplerGraph struct {
@@ -207,7 +200,3 @@ func (graph *Graph) initGraph(pay string, get string) {
 	graph.Lock.Unlock()
 }
 */
-
-
-
-
