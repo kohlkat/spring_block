@@ -11,6 +11,8 @@ import { History } from "./views/history"
 import { Network } from "./views/network"
 import { About } from "./views/about"
 import { NotFound } from "./views/not_found";
+import { HelloWorld } from "./views/helloworld";
+
 
 export default function AppRouter() {
     return (
@@ -24,6 +26,7 @@ export default function AppRouter() {
                     <Route path="/network" component={withRouter(Network)}/>
                     <Route path="/about" component={withRouter(About)}/>
                     <Route path="/history" component={withRouter(History)}/>
+                    <Route path="/helloworld" component={withRouter(HelloWorld)}/>
                     <Route component={withRouter(NotFound)}/>
                 </Switch>
                 </div>

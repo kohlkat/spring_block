@@ -17,7 +17,6 @@ export class Home extends Component {
             
         })
 
-
         /* Chart code */
         // Themes begin
         am4core.useTheme(am4themes_animated);
