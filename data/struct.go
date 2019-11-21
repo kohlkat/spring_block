@@ -65,20 +65,7 @@ type Transaction struct {
 		LedgerEntryType string `json:"LedgerEntryType"`
 		LedgerIndex     string `json:"LedgerIndex"`
 	} `json:"ModifiedNode,omitempty"`
-		DeletedNode struct {
-		FinalFields struct {
-		ExchangeRate      string `json:"ExchangeRate"`
-		Flags             int    `json:"Flags"`
-		RootIndex         string `json:"RootIndex"`
-		TakerGetsCurrency string `json:"TakerGetsCurrency"`
-		TakerGetsIssuer   string `json:"TakerGetsIssuer"`
-		TakerPaysCurrency string `json:"TakerPaysCurrency"`
-		TakerPaysIssuer   string `json:"TakerPaysIssuer"`
-		PreviousTxnID	  string  `json:"PreviousTxnID"`
-	} `json:"FinalFields"`
-		LedgerEntryType string `json:"LedgerEntryType"`
-		LedgerIndex     string `json:"LedgerIndex"`
-	} `json:"DeletedNode,omitempty"`
+			DeletedNode `json:"DeletedNode,omitempty"`
 	} `json:"AffectedNodes"`
 		TransactionIndex  int    `json:"TransactionIndex"`
 		TransactionResult string `json:"TransactionResult"`
@@ -101,6 +88,26 @@ type Transaction struct {
 		} `json:"Memo"`
 	} `json:"Memos,omitempty"`
 	DestinationTag int `json:"DestinationTag,omitempty"`
+}
+
+
+
+type DeletedNode struct {
+	FinalFields struct {
+		Account           string `json:"Account"`
+		BookDirectory     string `json:"BookDirectory"`
+		BookNode          string `json:"BookNode"`
+		Expiration        int    `json:"Expiration"`
+		Flags             int    `json:"Flags"`
+		OwnerNode         string `json:"OwnerNode"`
+		PreviousTxnID     string `json:"PreviousTxnID"`
+		PreviousTxnLgrSeq int    `json:"PreviousTxnLgrSeq"`
+		Sequence          int    `json:"Sequence"`
+		TakerGets         interface{} `json:"TakerGets"`
+		TakerPays         interface{} `json:"TakerPays"`
+	} `json:"FinalFields"`
+	LedgerEntryType string `json:"LedgerEntryType"`
+	LedgerIndex     string `json:"LedgerIndex"`
 }
 
 type LedgerSeqRequest struct {

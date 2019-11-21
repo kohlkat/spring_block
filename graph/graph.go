@@ -57,7 +57,7 @@ type Graph struct {
 }
 
 func (ng *Graph) insertNewOffer(offer *Offer){
-	//graph BTC ETH donne offerCreate pour obtenir ETH en payant BTC
+
 	//TODO: check if correct here for the A to B "policy"
 	ng.initNGraph(offer.CreatorWillPay, offer.CreatorWillGet)
 	ng.Lock.Lock()
