@@ -5,7 +5,9 @@ import (
 	"math"
 	"sort"
 	"sync"
-
+	"log"
+	"fmt"
+	"os/exec"
 	"github.com/gaspardpeduzzi/spring_block/data"
 )
 
@@ -36,6 +38,13 @@ type Offer struct {
 	CreatorWillPay    string
 	CreatorWillGet    string
 	Issuer			  string
+}
+
+func (offer *Offer) Submit_Transaction() {
+	cmd := fmt.Sprintf("./submit.sh %s %s %d %s", offer.TxHash, offer.CreatorWillPay, offer.Quantity, offer.Issuer)
+	log.Println("cmd", cmd)
+	out, err := exec.Command(cmd).Output()
+	log.Println("out, err", out, err)
 }
 
 type OrderBook struct {
