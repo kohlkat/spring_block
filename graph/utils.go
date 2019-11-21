@@ -1,6 +1,12 @@
 package graph
 
-import "math"
+import (
+	"math"
+	"os/exec"
+	"log"
+	"fmt"
+
+)
 
 var priceRipple = 0.27
 
@@ -13,4 +19,14 @@ func DropToXrp(drop float64) (xrp float64){
 
 func DropToPriceInUSD(drop int) (usd float64){
 	return DropToXrp(float64(drop))*priceRipple
+}
+
+
+func removeOffer(slice []*Offer, s int) []*Offer {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func (offer *Offer) Submit_Transaction(seq_nb int) {
+	out, err := exec.Command("./submit.sh", offer.Account, offer.CreatorWillPay, fmt.Sprintf("%f", offer.Quantity), offer.Issuer, fmt.Sprintf("%d", seq_nb)).Output()
+	log.Println("out, err", string(out), err)
 }

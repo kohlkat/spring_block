@@ -3,27 +3,20 @@ package graph
 import (
 	"github.com/gaspardpeduzzi/spring_block/display"
 	"log"
+	"reflect"
 	"strconv"
 
 	"github.com/gaspardpeduzzi/spring_block/data"
 )
 
 
-
-
-func (graph *Graph) parseOfferCancel (tx data.Transaction){
-	for _, test := range tx.MetaData.AffectedNodes{
-		log.Println(test.DeletedNode.FinalFields.PreviousTxnID)
-	}
-}
-
-func (graph *Graph) ParseOfferCreate (tx data.Transaction) []Offer {
+func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 	//display.DisplayVerbose("====================================================================================")
-	display.DisplayVerbose("Parsing tx", tx.Hash)
-	resultingOffers := make([]Offer, 1)
-	//rate :=
-	for _ , v := range  tx.MetaData.AffectedNodes {
+	//display.DisplayVerbose("Parsing tx", tx.Hash)
 
+	resultingOffers := make([]Offer, 1)
+
+	for _, v := range tx.MetaData.AffectedNodes {
 		created := v.CreatedNode.LedgerEntryType
 		modified := v.ModifiedNode.LedgerEntryType
 		deleted := v.DeletedNode.LedgerEntryType
@@ -39,8 +32,8 @@ func (graph *Graph) ParseOfferCreate (tx data.Transaction) []Offer {
 				test := v.CreatedNode.NewFields.TakerGets
 				test1 := v.CreatedNode.NewFields.TakerPays
 				//Offering
-				currency, amount, issuer := offerringCurrencyAndAmount(test)
-				currency1, amount1, issuer1 := offerringCurrencyAndAmount(test1)
+				currency, amount, issuer := CurrencyAmountAndIssuer(test)
+				currency1, amount1, issuer1 := CurrencyAmountAndIssuer(test1)
 				//display.DisplayVerbose("I'm paying", amount, currency, "To receive", amount1, currency1)
 
 				var actualIssuer string
@@ -50,9 +43,7 @@ func (graph *Graph) ParseOfferCreate (tx data.Transaction) []Offer {
 				} else {
 					actualIssuer = issuer
 				}
-				rate := amount1/amount
-
-
+				rate := amount / amount1
 
 				newOffer := &Offer{
 					XrpTx:          tx,
@@ -60,10 +51,10 @@ func (graph *Graph) ParseOfferCreate (tx data.Transaction) []Offer {
 					Account:        v.CreatedNode.NewFields.Account,
 					SequenceNumber: v.CreatedNode.NewFields.Sequence,
 					Rate:           rate,
-					Quantity:         amount,
-					CreatorWillPay:   currency,
-					CreatorWillGet:   currency1,
-					Issuer:			  actualIssuer,
+					Quantity:       amount,
+					CreatorWillPay: currency,
+					CreatorWillGet: currency1,
+					Issuer:         actualIssuer,
 				}
 				//display.DisplayVerbose("ACTUAL ISSUER", actualIssuer)
 				// graph.insertNewOfferToAccount(newOffer)
@@ -71,49 +62,94 @@ func (graph *Graph) ParseOfferCreate (tx data.Transaction) []Offer {
 			}
 
 		} else if m {
-			//display.DisplayVerbose("MODIFIED NODE", v.ModifiedNode.LedgerEntryType)
+
+
+			if v.DeletedNode.LedgerEntryType == "Offer" {
+				display.DisplayVerbose("MODIFIED NODE OFFER", v.ModifiedNode.LedgerEntryType)
+
+			}
 		} else if d {
 			//display.DisplayVerbose("DELETED NODE", v.DeletedNode.LedgerEntryType)
 			if v.DeletedNode.LedgerEntryType == "Offer" {
-				// Would be great if we could check that it deletes actually the node here
-				//delete previous offer
 
-				/*
-					toDelete := &Offer{
-						XrpTx:          tx,
-						TxHash:         tx.Hash,
-						Account:        v.DeletedNode.FinalFields.Account,
-						SequenceNumber: v.DeletedNode.FinalFields.Sequence,
-						Rate:           0,
-						Quantity:       0,
-						CreatorWillPay:            "",
-						CreatorWillGet:            "",
+				//graph BTC ETH donne offerCreate pour obtenir ETH en payant BTC
+				//[TG][TP]
+				account := v.DeletedNode.FinalFields.Account
+				seq := v.DeletedNode.FinalFields.Sequence
+				tp := v.DeletedNode.FinalFields.TakerPays
+				tg := v.DeletedNode.FinalFields.TakerGets
+
+				currencyTP, _, _ := CurrencyAmountAndIssuer(tp)
+				currencyTG, _, issuerTG := CurrencyAmountAndIssuer(tg)
+
+				//display.DisplayVerbose("DELETED", account, seq, "ORDERBOOK", currencyTG, "/", currencyTP)
+
+				offer := &Offer{
+					XrpTx:          tx,
+					TxHash:         tx.Hash,
+					Account:        account,
+					SequenceNumber: seq,
+					Rate:           0,
+					Quantity:       0,
+					CreatorWillPay: currencyTG,
+					CreatorWillGet: currencyTP,
+					Issuer:         issuerTG,
+				}
+
+				//deletedOffers = append(deletedOffers, offer)
+				if graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet] != nil {
+					for k, v := range graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List {
+						if v.Account == account && v.SequenceNumber == seq {
+							removeOffer(graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List,k)
+
+						}
 					}
-				*/
+				}
 
-				//graph.deleteOffer(toDelete)
-				//graph.AccountRoots[v.DeletedNode.FinalFields.Account][v.DeletedNode.FinalFields.Sequence] = nil
-				//display.DisplayVerbose("DELETED previous offer from", v.DeletedNode.FinalFields.Account, "with seq #", v.DeletedNode.FinalFields.Sequence)
+
+				//display.DisplayVerbose("Taker gets", currencyTG, amountTG, issuerTG)
+				//display.DisplayVerbose("Taker pays", currencyTP, amountTP, issuerTP)
+
 			}
-		}
-		//resultingOffers = append(resultingOffers, offer)
-	}
 
-	//display.DisplayVerbose("====================================================================================")
+		}
+	}
 	return resultingOffers
+
+}
+
+//display.DisplayVerbose("====================================================================================")
+
+
+
+
+func typeOfTransaction(currencyTP string, currencyTG string) string {
+	if currencyTP == "" && currencyTG != "" {
+		return "TG"
+	} else if currencyTG == "" && currencyTP != "" {
+		return "TP"
+	} else if currencyTP != "" && currencyTG != "" {
+		return "multi"
+
+	}
+	display.DisplayVerbose("TYPES", reflect.TypeOf(currencyTP), reflect.TypeOf(currencyTG))
+	return ""
 }
 
 
+/*
 
+func removeAtIndex(a []Order, i int) []Order {
+	// Remove the element at index i from a.
+	copy(a[i:], a[i+1:]) // Shift a[i+1:] left one index.
+	a[len(a)-1] = ""     // Erase last element (write zero value).
+	a = a[:len(a)-1]     // Truncate slice.
 
+	return a
+}
+*/
 
-
-
-
-
-
-
-func offerringCurrencyAndAmount(takerPays interface{}) (string, float64, string) {
+func CurrencyAmountAndIssuer(takerPays interface{}) (string, float64, string) {
 	var weWillPayInCurrency string
 	var priceToPay string
 	var issuer string
@@ -139,3 +175,35 @@ func offerringCurrencyAndAmount(takerPays interface{}) (string, float64, string)
 
 	return weWillPayInCurrency, weWillPayAmount, issuer
 }
+
+
+
+/*
+	switch typeTx {
+	default:
+		log.Println("unrecognized type of transaction")
+	case "TG":
+
+
+	case "TP":
+		display.DisplayVerbose("TP")
+		for _, v := range graph.NGraph[currencyTP]["XRP"].List {
+			if v.Account == account && v.SequenceNumber == seq {
+				display.DisplayVerbose("DELETE ME")
+			}
+		}
+		display.DisplayVerbose("Taker pays", currencyTP, amountTP, issuerTP)
+
+	case "multi":
+
+		display.DisplayVerbose("MULTI")
+
+
+		/*
+		for _, v := range graph.NGraph[currencyTG][currencyTP].List {
+			if v.Account == account && v.SequenceNumber == seq {
+				display.DisplayVerbose("DELETE ME")
+			}
+		}
+		display.DisplayVerbose("Taker pays", currencyTP, amountTP, issuerTP)
+*/
