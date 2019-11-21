@@ -59,6 +59,11 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 					Issuer:         actualIssuer,
 
 				}
+				if ! graph.Issuers[newOffer.Issuer] {
+					graph.Issuers[newOffer.Issuer] = true
+					display.DisplayAnalysis("NEW ISSUER: ", newOffer.Issuer, "TRACK ISSUERS: ",  len(graph.Issuers))
+				}
+
 
 				graph.insertNewOffer(newOffer)
 			}
