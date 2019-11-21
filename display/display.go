@@ -40,6 +40,7 @@ func DisplayAnalysis(args ...interface{}) {
 	}
 }
 
+
 func readFile(path string) {
 	// Open file for reading.
 	var file, err = os.OpenFile(path, os.O_RDWR, 0644)

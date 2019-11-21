@@ -25,25 +25,27 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 		d := created == "" && modified == "" && deleted != ""
 
 		if c {
-			//display.DisplayVerbose("CREATED NODE")
-			if v.CreatedNode.LedgerEntryType == "Offer" {
 
+			if v.CreatedNode.LedgerEntryType == "Offer" {
+				//display.DisplayVerbose("CREATED NODE", tx.Hash)
 				//display.DisplayVerbose("CREATED new offer from", v.CreatedNode.NewFields.Account, "with seq #", v.CreatedNode.NewFields.Sequence)
+
 				test := v.CreatedNode.NewFields.TakerGets
 				test1 := v.CreatedNode.NewFields.TakerPays
+
 				//Offering
 				currency, amount, issuer := CurrencyAmountAndIssuer(test)
 				currency1, amount1, issuer1 := CurrencyAmountAndIssuer(test1)
+
 				//display.DisplayVerbose("I'm paying", amount, currency, "To receive", amount1, currency1)
-
 				var actualIssuer string
-
-				if (issuer == "") {
+				if issuer == "" {
 					actualIssuer = issuer1
 				} else {
 					actualIssuer = issuer
 				}
 				rate := amount / amount1
+				//display.DisplayVerbose("RATE", rate)
 
 				newOffer := &Offer{
 					XrpTx:          tx,
@@ -55,9 +57,9 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 					CreatorWillPay: currency,
 					CreatorWillGet: currency1,
 					Issuer:         actualIssuer,
+
 				}
-				display.DisplayAnalysis("ACTUAL ISSUER", actualIssuer)
-				// graph.insertNewOfferToAccount(newOffer)
+
 				graph.insertNewOffer(newOffer)
 			}
 
@@ -105,7 +107,6 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 						}
 					}
 				}
-
 
 				//display.DisplayVerbose("Taker gets", currencyTG, amountTG, issuerTG)
 				//display.DisplayVerbose("Taker pays", currencyTP, amountTP, issuerTP)
