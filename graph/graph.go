@@ -58,8 +58,6 @@ type OrderBook struct {
 
 // Graph : Data structure for graph of offers
 type Graph struct {
-	Graph map[string]map[string]*TxList
-
 	NGraph map[string]map[string]*OrderBook
 	AccountRoots map[string]map[int]*Offer
 	Lock  sync.RWMutex

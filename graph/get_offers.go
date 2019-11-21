@@ -38,7 +38,7 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 	for i, _ := range cycle {
 		// Get best edge
 		// log.Println("graph.Graph[cycle[i]]", graph.Graph[cycle[i]], len(graph.Graph), len(graph.Graph[cycle[i]]))
-		edges := graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]]
+		edges := graph.NGraph[cycle[i]][cycle[(i+1)%cycle_count]]
 
 		if edges == nil || len(edges.List) == 0 {
 			log.Println("predecessors", predecessors)
@@ -51,7 +51,7 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 		// Update total quantities for that edge
 		quantities[i] = edge.Quantity
 		// Remove used edge from graph
-		graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]].List = graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]].List[1:]
+		graph.NGraph[cycle[i]][cycle[(i+1)%cycle_count]].List = graph.NGraph[cycle[i]][cycle[(i+1)%cycle_count]].List[1:]
 		// Update selected edges
 		res[i] = make([]Offer, 0)
 		res[i] = append(res[i], *edge)
@@ -73,7 +73,7 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 		bottleneck_edge := -1
 
 		for i, v := range quantities {
-			edges := graph.Graph[cycle[i]][cycle[(i+1)%cycle_count]]
+			edges := graph.NGraph[cycle[i]][cycle[(i+1)%cycle_count]]
 			if v == minQuantity && edges != nil && len(edges.List) > 0 {
 				bottleneck_edge = i
 			}
@@ -85,10 +85,10 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 			return res, cycle
 		} else {
 			// Getting next edges
-			copy(next_edges, graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List)
+			copy(next_edges, graph.NGraph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List)
 
 			// Removing first one
-			graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List = graph.Graph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List[1:]
+			graph.NGraph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List = graph.NGraph[cycle[bottleneck_edge]][cycle[(bottleneck_edge+1)%cycle_count]].List[1:]
 		}
 
 		next_edge := next_edges[0]
