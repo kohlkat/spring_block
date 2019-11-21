@@ -39,16 +39,13 @@ func getArbitrageOpportunities(w http.ResponseWriter, r *http.Request) {
 }
 
 func LaunchServer() {
+	fmt.Println("GUI Server up and running")
 	ArbitrageOffersDB = make([]*ArbitrageOpportunities, 0)
 	fs := http.FileServer(http.Dir("frontend"))
 	http.Handle("/", fs)
-	fmt.Println("Server up and running")
-
-	//fmt.Printf("Starting server for GUI\n")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
-		//fmt.Println(err)
+		fmt.Println(err)
 	}
-
 	http.HandleFunc("/connect", connect)
 	http.HandleFunc("/getArbitrageOpportunities", getArbitrageOpportunities)
 
