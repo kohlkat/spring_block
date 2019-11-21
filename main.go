@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+
 	display "github.com/gaspardpeduzzi/spring_block/display"
+	server "github.com/gaspardpeduzzi/spring_block/server"
 )
 
 func main() {
@@ -17,15 +19,25 @@ func main() {
 
 	c := make(chan int)
 
-
-
 	liquidOptimizer := NewOptimizer(*addr, c)
 	liquidOptimizer.NConstructTxGraph()
 
+	server.LaunchServer()
 
+	// Search for arbitrage opportunities and store them
+	for {
+		<-c
+		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+		server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
 
-
-
+		if allOffers != nil {
+			for i, offers := range allOffers {
+				for _, offer := range offers {
+					server.ArbitrageOffersDB[len(server.ArbitrageOffersDB)-1].Offers = append(server.ArbitrageOffersDB[len(server.ArbitrageOffersDB)-1].Offers, &server.OfferSummary{From: cycle[i], To: cycle[(i+1)%len(cycle)], Rate: offer.Rate, Hash: offer.TxHash, Volume: offer.Quantity})
+				}
+			}
+		}
+	}
 
 	/*
 		for {
