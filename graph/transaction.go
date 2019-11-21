@@ -43,7 +43,7 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 				} else {
 					actualIssuer = issuer
 				}
-				rate := amount1 / amount
+				rate := amount / amount1
 
 				newOffer := &Offer{
 					XrpTx:          tx,
@@ -82,7 +82,7 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 				currencyTP, _, _ := CurrencyAmountAndIssuer(tp)
 				currencyTG, _, issuerTG := CurrencyAmountAndIssuer(tg)
 
-				display.DisplayVerbose("DELETED", account, seq, "ORDERBOOK", currencyTG, "/", currencyTP)
+				//display.DisplayVerbose("DELETED", account, seq, "ORDERBOOK", currencyTG, "/", currencyTP)
 
 				offer := &Offer{
 					XrpTx:          tx,
@@ -97,10 +97,10 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 				}
 
 				//deletedOffers = append(deletedOffers, offer)
-				if graph.NGraph[offer.CreatorWillPay][offer.CreatorWillGet] != nil {
-					for k, v := range graph.NGraph[offer.CreatorWillPay][offer.CreatorWillGet].List {
+				if graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet] != nil {
+					for k, v := range graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List {
 						if v.Account == account && v.SequenceNumber == seq {
-							removeOffer(graph.NGraph[offer.CreatorWillPay][offer.CreatorWillGet].List,k)
+							removeOffer(graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List,k)
 
 						}
 					}
@@ -120,9 +120,7 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 
 //display.DisplayVerbose("====================================================================================")
 
-func removeOffer(slice []*Offer, s int) []*Offer {
-	return append(slice[:s], slice[s+1:]...)
-}
+
 
 
 func typeOfTransaction(currencyTP string, currencyTG string) string {

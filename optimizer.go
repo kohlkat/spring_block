@@ -8,7 +8,6 @@ import (
 	"github.com/gaspardpeduzzi/spring_block/graph"
 )
 
-
 var oldestIndex = 0
 
 type Optimizer struct {
@@ -19,7 +18,7 @@ type Optimizer struct {
 
 func NewOptimizer(endpoint string, c chan int) *Optimizer {
 	graph := graph.Graph{
-		NGraph: make(map[string]map[string]*graph.OrderBook),
+		Graph: make(map[string]map[string]*graph.OrderBook),
 		AccountRoots: make(map[string]map[int]*graph.Offer),
 		Lock:  sync.RWMutex{},
 	}
@@ -45,10 +44,8 @@ func (lo *Optimizer) NConstructTxGraph() {
 	lo.NConstructTxGraph()
 }
 
-
-
 func (lo *Optimizer) ParseOfferCreateTransactions(transactions []data.Transaction) {
-	log.Println("ADDED", len(transactions), " OfferCreate transaction(s)")
+	log.Println("ADDED", len(transactions), "new transaction(s)")
 	for _, tx := range transactions {
 		lo.Graph.ParseTransaction(tx)
 
