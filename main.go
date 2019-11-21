@@ -12,9 +12,11 @@ func main() {
 
 	var addr = flag.String("addr", "s1.ripple.com:51233", "http service address")
 	var verb = flag.Bool("verb", false, "Display more information")
+	var analysis = flag.Bool("analysis",false, "Analyse statistics")
 
 	flag.Parse()
 	display.VERBOSE = *verb
+	display.ANALYSIS = *analysis
 	display.Init()
 
 	c := make(chan int)

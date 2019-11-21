@@ -8,6 +8,7 @@ import (
 )
 
 var VERBOSE bool
+var ANALYSIS bool
 var ascii_path = "display/ascii_art.txt"
 
 func AsciiArt() {
@@ -23,6 +24,15 @@ func Init() {
 
 func DisplayVerbose(args ...interface{}) {
 	if VERBOSE {
+		for _, k := range args {
+			fmt.Print(k, " ")
+		}
+		fmt.Println()
+	}
+}
+
+func DisplayAnalysis(args ...interface{}) {
+	if ANALYSIS {
 		for _, k := range args {
 			fmt.Print(k, " ")
 		}

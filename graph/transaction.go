@@ -56,7 +56,7 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 					CreatorWillGet: currency1,
 					Issuer:         actualIssuer,
 				}
-				//display.DisplayVerbose("ACTUAL ISSUER", actualIssuer)
+				display.DisplayAnalysis("ACTUAL ISSUER", actualIssuer)
 				// graph.insertNewOfferToAccount(newOffer)
 				graph.insertNewOffer(newOffer)
 			}
