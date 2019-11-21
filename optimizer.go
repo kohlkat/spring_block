@@ -53,7 +53,7 @@ func (lo *Optimizer) ParseOfferCreateTransactions(transactions []data.Transactio
 		lo.Graph.ParseTransaction(tx)
 
 	}
-	//lo.Graph.SortGraphWithTxs()
+	lo.Graph.SortGraphWithTxs()
 }
 
 

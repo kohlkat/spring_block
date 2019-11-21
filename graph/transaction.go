@@ -12,11 +12,11 @@ import (
 
 func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 	//display.DisplayVerbose("====================================================================================")
-	display.DisplayVerbose("Parsing tx", tx.Hash)
-	resultingOffers := make([]Offer, 1)
-	//rate :=
-	for _, v := range tx.MetaData.AffectedNodes {
+	//display.DisplayVerbose("Parsing tx", tx.Hash)
 
+	resultingOffers := make([]Offer, 1)
+
+	for _, v := range tx.MetaData.AffectedNodes {
 		created := v.CreatedNode.LedgerEntryType
 		modified := v.ModifiedNode.LedgerEntryType
 		deleted := v.DeletedNode.LedgerEntryType
@@ -62,7 +62,12 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 			}
 
 		} else if m {
-			//display.DisplayVerbose("MODIFIED NODE", v.ModifiedNode.LedgerEntryType)
+
+
+			if v.DeletedNode.LedgerEntryType == "Offer" {
+				display.DisplayVerbose("MODIFIED NODE OFFER", v.ModifiedNode.LedgerEntryType)
+
+			}
 		} else if d {
 			//display.DisplayVerbose("DELETED NODE", v.DeletedNode.LedgerEntryType)
 			if v.DeletedNode.LedgerEntryType == "Offer" {
@@ -74,8 +79,8 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 				tp := v.DeletedNode.FinalFields.TakerPays
 				tg := v.DeletedNode.FinalFields.TakerGets
 
-				currencyTP, amountTP, issuerTP := CurrencyAmountAndIssuer(tp)
-				currencyTG, amountTG, issuerTG := CurrencyAmountAndIssuer(tg)
+				currencyTP, _, _ := CurrencyAmountAndIssuer(tp)
+				currencyTG, _, issuerTG := CurrencyAmountAndIssuer(tg)
 
 				display.DisplayVerbose("DELETED", account, seq, "ORDERBOOK", currencyTG, "/", currencyTP)
 
@@ -102,8 +107,8 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 				}
 
 
-				display.DisplayVerbose("Taker gets", currencyTG, amountTG, issuerTG)
-				display.DisplayVerbose("Taker pays", currencyTP, amountTP, issuerTP)
+				//display.DisplayVerbose("Taker gets", currencyTG, amountTG, issuerTG)
+				//display.DisplayVerbose("Taker pays", currencyTP, amountTP, issuerTP)
 
 			}
 

@@ -1,14 +1,14 @@
 package graph
 
 import (
+	"fmt"
+	"github.com/gaspardpeduzzi/spring_block/data"
+	"log"
 	// "log"
 	"math"
+	"os/exec"
 	"sort"
 	"sync"
-	"log"
-	"fmt"
-	"os/exec"
-	"github.com/gaspardpeduzzi/spring_block/data"
 )
 
 var capacityList = 0
@@ -137,20 +137,21 @@ func (graph *Graph) getCurrenciesList() []string {
 
 // SortGraphWithTxs : function for creating a new graph with offers sorted by rates
 func (graph *Graph) SortGraphWithTxs() {
-	sortedGraph := make(map[string]map[string]*TxList)
-	for k1, v1 := range graph.Graph {
-		sortedGraph[k1] = map[string]*TxList{}
+	sortedGraph := make(map[string]map[string]*OrderBook)
+	for k1, v1 := range graph.NGraph {
+		sortedGraph[k1] = map[string]*OrderBook{}
 		for k2, v2 := range v1 {
 			list := v2.List
 			sort.Slice(list, func(i, j int) bool {
 				return v2.List[i].Rate > v2.List[j].Rate
 			})
-
 			//sortedGraph[k1][k2] = &TxList{List: list}
-			copy(graph.Graph[k1][k2].List, list)
-
+			//display.DisplayVerbose("VERIF", list[0], list[1])
+			copy(graph.NGraph[k1][k2].List, list)
 		}
 	}
+
+
 
 
 }
