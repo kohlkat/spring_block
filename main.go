@@ -9,8 +9,10 @@ import (
 )
 
 func main() {
+
 	var addr = flag.String("addr", "s1.ripple.com:51233", "http service address")
 	var verb = flag.Bool("verb", false, "Display more information")
+
 	flag.Parse()
 	display.VERBOSE = *verb
 	display.Init()
@@ -18,9 +20,9 @@ func main() {
 	c := make(chan int)
 
 	liquidOptimizer := NewOptimizer(*addr, c)
-	liquidOptimizer.NConstructTxGraph()
 
-	server.LaunchServer()
+	go liquidOptimizer.ConstructTxGraph()
+	go server.LaunchServer()
 
 	// Search for arbitrage opportunities and store them
 	for {
@@ -29,8 +31,6 @@ func main() {
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
 		seq_nb := 1
 		server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
-
-
 
 		if allOffers != nil {
 			//Should never be displayed in verbose mode :)
@@ -46,6 +46,6 @@ func main() {
 			}
 			log.Println("====================================================================================")
 		}
-
 	}
+
 }

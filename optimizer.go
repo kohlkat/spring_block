@@ -25,7 +25,7 @@ func NewOptimizer(endpoint string, c chan int) *Optimizer {
 	return &Optimizer{endpoint, graph, c}
 }
 
-func (lo *Optimizer) NConstructTxGraph() {
+func (lo *Optimizer) ConstructTxGraph() {
 	lastIndex := data.GetLastLedgerSeq(&lo.Endpoint)
 	if lastIndex > oldestIndex {
 		display.DisplayVerbose("New block index: ", lastIndex)
@@ -39,9 +39,9 @@ func (lo *Optimizer) NConstructTxGraph() {
 		}
 		lo.ParseOfferCreateTransactions(tmpCreate)
 		lo.Channel <- 1
-		lo.NConstructTxGraph()
+		lo.ConstructTxGraph()
 	}
-	lo.NConstructTxGraph()
+	lo.ConstructTxGraph()
 }
 
 func (lo *Optimizer) ParseOfferCreateTransactions(transactions []data.Transaction) {
