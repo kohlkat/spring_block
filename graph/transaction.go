@@ -59,7 +59,7 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 					Issuer:         actualIssuer,
 
 				}
-
+				
 				graph.insertNewOffer(newOffer)
 			}
 
