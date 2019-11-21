@@ -102,7 +102,6 @@ func (graph *Graph) initNGraph(pay string, get string) {
 func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	currencies := graph.getCurrenciesList()
-
 	log.Println("Here")
 
 	var simpleGraph = map[string]map[string]float64{}
@@ -114,7 +113,7 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 		}
 	}
 
-	for k1, v1 := range graph.Graph {
+	for k1, v1 := range graph.NGraph {
 		for k2, v2 := range v1 {
 			if len(v2.List) > 0 {
 				simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
@@ -130,9 +129,9 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 }
 
 func (graph *Graph) getCurrenciesList() []string {
-	currencies := make([]string, len(graph.Graph))
+	currencies := make([]string, len(graph.NGraph))
 	i := 0
-	for k := range graph.Graph {
+	for k := range graph.NGraph {
 		currencies[i] = k
 		i++
 	}

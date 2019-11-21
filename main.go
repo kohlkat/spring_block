@@ -21,7 +21,7 @@ func main() {
 
 
 	liquidOptimizer := NewOptimizer(*addr, c)
-	liquidOptimizer.NConstructTxGraph()
+	go liquidOptimizer.NConstructTxGraph()
 
 	for {
 		display.DisplayVerbose("waiting for next block...")
