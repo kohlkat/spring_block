@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -12,6 +13,10 @@ type OK struct {
 
 // ArbitrageOffersDB : Datastructure to hold arbitrage opportunities
 var ArbitrageOffersDB []*ArbitrageOpportunities
+
+
+
+
 
 func connect(w http.ResponseWriter, r *http.Request) {
 
@@ -32,9 +37,18 @@ func connect(w http.ResponseWriter, r *http.Request) {
 
 func getArbitrageOpportunities(w http.ResponseWriter, r *http.Request) {
 
+
+	if r.URL.Path != "/arbitrage" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+
 	switch r.Method {
 	case "GET":
-		json.NewEncoder(w).Encode(ArbitrageOffersDB)
+		err := json.NewEncoder(w).Encode(ArbitrageOffersDB)
+		if err != nil {
+			log.Println("Error encoding", err)
+		}
 	}
 }
 
@@ -47,7 +61,7 @@ func LaunchServer() {
 		fmt.Println(err)
 	}
 	http.HandleFunc("/connect", connect)
-	http.HandleFunc("/getArbitrageOpportunities", getArbitrageOpportunities)
+	http.HandleFunc("/arbitrage", getArbitrageOpportunities)
 
 }
 

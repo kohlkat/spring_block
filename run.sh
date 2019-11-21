@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 declare -i count=0
 
 # write to file only the opportunities
@@ -14,7 +13,6 @@ test(){
         test
   fi
 }
-
 
 test
 echo over
