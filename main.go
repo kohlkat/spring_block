@@ -26,6 +26,7 @@ func main() {
 	for {
 		display.DisplayVerbose("waiting for next block...")
 		<-c
+		seq_nb := 1
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
 		//returns map[int][]Offer, []string
 
@@ -36,7 +37,8 @@ func main() {
 			for i, offers := range allOffers {
 				for _, offer := range offers {
 					log.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.TxHash, "Volume:", offer.Quantity)
-					offer.Submit_Transaction()
+					offer.Submit_Transaction(seq_nb)
+					seq_nb = seq_nb + 1
 				}
 			}
 			log.Println("====================================================================================")

@@ -40,11 +40,9 @@ type Offer struct {
 	Issuer			  string
 }
 
-func (offer *Offer) Submit_Transaction() {
-	cmd := fmt.Sprintf("./submit.sh %s %s %d %s", offer.TxHash, offer.CreatorWillPay, offer.Quantity, offer.Issuer)
-	log.Println("cmd", cmd)
-	out, err := exec.Command(cmd).Output()
-	log.Println("out, err", out, err)
+func (offer *Offer) Submit_Transaction(seq_nb int) {
+	out, err := exec.Command("./submit.sh", offer.Account, offer.CreatorWillPay, fmt.Sprintf("%f", offer.Quantity), offer.Issuer, fmt.Sprintf("%d", seq_nb)).Output()
+	log.Println("out, err", string(out), err)
 }
 
 type OrderBook struct {
@@ -100,7 +98,6 @@ func (graph *Graph) initNGraph(pay string, get string) {
 func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	currencies := graph.getCurrenciesList()
-	log.Println("Here")
 
 	var simpleGraph = map[string]map[string]float64{}
 
@@ -116,11 +113,6 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 			if len(v2.List) > 0 {
 				simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
 			}
-
-			if len(v2.List) > 1 {
-				log.Println("check", v2.List[0].Rate >= v2.List[1].Rate)
-			}
-			log.Println("size", len(v2.List))
 		}
 	}
 	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
