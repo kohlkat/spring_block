@@ -103,6 +103,8 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 
 	currencies := graph.getCurrenciesList()
 
+	log.Println("Here")
+
 	var simpleGraph = map[string]map[string]float64{}
 
 	for _, i := range currencies {
@@ -116,9 +118,12 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 		for k2, v2 := range v1 {
 			if len(v2.List) > 0 {
 				simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
-			} else {
-				simpleGraph[k1][k2] = math.MaxFloat64
 			}
+
+			if len(v2.List) > 1 {
+				log.Println("check", v2.List[0].Rate >= v2.List[1].Rate)
+			}
+			log.Println("size", len(v2.List))
 		}
 	}
 	return SimplerGraph{Graph: simpleGraph, Currencies: currencies, Lock: sync.Mutex{}}
@@ -150,10 +155,6 @@ func (graph *Graph) SortGraphWithTxs() {
 			copy(graph.NGraph[k1][k2].List, list)
 		}
 	}
-
-
-
-
 }
 
 

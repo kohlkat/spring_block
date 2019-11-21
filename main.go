@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	display "github.com/gaspardpeduzzi/spring_block/display"
 )
 
@@ -22,30 +23,25 @@ func main() {
 	liquidOptimizer := NewOptimizer(*addr, c)
 	liquidOptimizer.NConstructTxGraph()
 
+	for {
+		display.DisplayVerbose("waiting for next block...")
+		<-c
+		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+		//returns map[int][]Offer, []string
 
-
-
-
-
-	/*
-		for {
-			display.DisplayVerbose("waiting for next block...")
-			<-c
-			allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
-			//returns map[int][]Offer, []string
-
-			if allOffers != nil {
-				//Should never be displayed in verbose mode :)
-				log.Println("Found profitable cycle:", cycle)
-				log.Println("====================================================================================")
-				for i, offers := range allOffers {
-					for _, offer := range offers {
-						log.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.Hash, "Volume:", offer.Volume)
-					}
+		if allOffers != nil {
+			//Should never be displayed in verbose mode :)
+			log.Println("Found profitable cycle:", cycle)
+			log.Println("====================================================================================")
+			for i, offers := range allOffers {
+				for _, offer := range offers {
+					log.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.TxHash, "Volume:", offer.Quantity)
+					offer.Submit_Transaction()
 				}
-				log.Println("====================================================================================")
-				//return
 			}
-		}*/
+			log.Println("====================================================================================")
+			//return
+		}
+	}
 
 }

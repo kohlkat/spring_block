@@ -39,7 +39,7 @@ func (lo *Optimizer) NConstructTxGraph() {
 			}
 		}
 		lo.ParseOfferCreateTransactions(tmpCreate)
-		//lo.Channel <- 1
+		lo.Channel <- 1
 		lo.NConstructTxGraph()
 	}
 	lo.NConstructTxGraph()
@@ -54,7 +54,5 @@ func (lo *Optimizer) ParseOfferCreateTransactions(transactions []data.Transactio
 
 	}
 	lo.Graph.SortGraphWithTxs()
+	// lo.Channel <- 1
 }
-
-
-
