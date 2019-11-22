@@ -7,18 +7,17 @@ import (
 
 func (graph *Graph) PaymentTransactionParse(tx data.Transaction) (newOffers []Offer) {
 
-
 	if len(tx.Paths)>0 &&  tx.MetaData.TransactionResult != "tesSUCCESS" {
-		display.DisplayVerbose("====================================================================================")
-		display.DisplayVerbose("Parsing PAYMENT tx", tx.Hash, "transaction status", tx.MetaData.TransactionResult)
-		display.DisplayVerbose("FOUND PATHS")
-		display.DisplayVerbose("PATHS in transactions", len(tx.Paths))
+		display.DisplayAnalysis("====================================================================================")
+		display.DisplayAnalysis("Parsing PAYMENT tx", tx.Hash, "transaction status", tx.MetaData.TransactionResult)
+		display.DisplayAnalysis("FOUND PATHS")
+		display.DisplayAnalysis("PATHS in transactions", len(tx.Paths))
 		for k, v := range tx.Paths {
 			for i,j := range v {
-				display.DisplayVerbose(k,i, v, j)
+				display.DisplayAnalysis(k,i, v, j)
 			}
 		}
-		display.DisplayVerbose("====================================================================================")
+		display.DisplayAnalysis("====================================================================================")
 	}
 
 

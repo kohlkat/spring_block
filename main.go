@@ -30,15 +30,17 @@ func main() {
 	for {
 		display.DisplayVerbose("waiting for next block...")
 		<-c
+		//update server data
+		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
+
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
 		seq_nb := 1
 
 
-
+		//Should never be displayed in verbose mode :)
 		if allOffers != nil {
-			//Should never be displayed in verbose mode :)
 			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
-			server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
+
 			fmt.Println("Found profitable cycle:", cycle)
 			fmt.Println("====================================================================================")
 			for i, offers := range allOffers {
