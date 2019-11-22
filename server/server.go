@@ -8,6 +8,21 @@ import (
 
 )
 
+
+type ArbitrageOpportunities struct {
+	Pair   []string
+	Offers []*OfferSummary
+}
+
+type OfferSummary struct {
+	From   string
+	To     string
+	Rate   float64
+	Hash   string
+	Volume float64
+}
+
+
 type OK struct {
 	Welcome string
 }
@@ -20,6 +35,13 @@ type Opportunity struct {
 	Rate float64
 	Hash string
 
+}
+
+type OpportunityInfo struct {
+	Pairs string
+	CycleSize int
+	Volume float64
+	Profit float64
 }
 
 
@@ -36,6 +58,7 @@ var Clients []string
 var AccountOrders map[string]int
 
 var LatestOpportunity []*Opportunity
+var RecentOpportunities []*OpportunityInfo
 
 
 func connect(w http.ResponseWriter, r *http.Request) {
@@ -145,6 +168,22 @@ func latestOpportunity(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func recentOpportunities(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/recentOpportunities" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		err := json.NewEncoder(w).Encode(RecentOpportunities)
+		//Install
+
+		if err != nil {
+			log.Println("Error encoding", err)
+		}
+	}
+}
+
 
 
 func LaunchServer() {
@@ -152,6 +191,7 @@ func LaunchServer() {
 	ArbitrageOffersDB = make([]*ArbitrageOpportunities, 0)
 	AccountOrders = make(map[string]int)
 	LatestOpportunity = make([]*Opportunity, 0)
+	RecentOpportunities = make([]*OpportunityInfo, 0)
 
 	//fs := http.FileServer(http.Dir(""))
 	fs := http.FileServer(http.Dir("frontend"))
@@ -164,25 +204,11 @@ func LaunchServer() {
 	http.HandleFunc("/clients", clients)
 	http.HandleFunc("/accountOrders", accountOrders)
 	http.HandleFunc("/latestOpportunity", latestOpportunity)
-
-
+	http.HandleFunc("/recentOpportunities", recentOpportunities)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println(err)
 	}
 
 
-}
-
-type ArbitrageOpportunities struct {
-	Pair   []string
-	Offers []*OfferSummary
-}
-
-type OfferSummary struct {
-	From   string
-	To     string
-	Rate   float64
-	Hash   string
-	Volume float64
 }

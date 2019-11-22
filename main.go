@@ -80,6 +80,8 @@ func main() {
 				}
 			}
 			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: hello})
+
+
 			//Latest Opportunity
 			latest := server.ArbitrageOffersDB[len(server.ArbitrageOffersDB)-1]
 			var product float64 = 1.0
@@ -94,6 +96,35 @@ func main() {
 					Hash:     offer.Hash,
 				}
 				server.LatestOpportunity = append(server.LatestOpportunity, opp)
+			}
+
+			//Recent Opportunities
+			recents := server.ArbitrageOffersDB
+			if len(server.ArbitrageOffersDB) > 10 {
+				recents = server.ArbitrageOffersDB[len(server.ArbitrageOffersDB)-11 : len(server.ArbitrageOffersDB)-1]
+			}
+			
+			for _, offers := range recents {
+				cycleSize := 1
+				pairs := ""
+				volume := offers.Offers[0].Volume
+				var product float64 = 1.0
+				for _, offer := range offers.Offers {
+					product = product*offer.Rate
+					pairs += offer.From
+					cycleSize += 1
+					if volume > offer.Volume {
+						volume = offer.Volume
+					}
+				}
+
+				opp := &server.OpportunityInfo{
+					Pairs:     pairs,
+					CycleSize: cycleSize,
+					Volume:    volume,
+					Profit:    product,
+				}
+				server.RecentOpportunities = append(server.RecentOpportunities, opp)
 			}
 
 
