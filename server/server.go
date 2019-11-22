@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
 )
 
 type OK struct {
@@ -13,9 +14,14 @@ type OK struct {
 
 // ArbitrageOffersDB : Datastructure to hold arbitrage opportunities
 var ArbitrageOffersDB []*ArbitrageOpportunities
+//The number of accounts active
 var AccountsNumber int
+//List the issuers
 var Issuers []string
+//List the clients
 var Clients []string
+//For a given account give the number of tx it is involved
+var AccountOrders map[string]int
 
 func connect(w http.ResponseWriter, r *http.Request) {
 	log.Println("RECEIVED REQUEST")
@@ -91,9 +97,27 @@ func clients(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func accountOrders(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/accountOrders" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		account := r.URL.Query().Get("account")
+		err := json.NewEncoder(w).Encode(AccountOrders[account])
+		//Install
+
+		if err != nil {
+			log.Println("Error encoding", err)
+		}
+	}
+}
+
 func LaunchServer() {
 	log.Println("GUI Server up and running")
 	ArbitrageOffersDB = make([]*ArbitrageOpportunities, 0)
+	AccountOrders = make(map[string]int)
 
 	//fs := http.FileServer(http.Dir(""))
 	fs := http.FileServer(http.Dir("frontend"))
@@ -104,6 +128,8 @@ func LaunchServer() {
 	http.HandleFunc("/accountsNumber", accountsNumber)
 	http.HandleFunc("/issuers", issuers)
 	http.HandleFunc("/clients", clients)
+	http.HandleFunc("/accountOrders", accountOrders)
+
 
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {

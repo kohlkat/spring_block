@@ -68,8 +68,8 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 					display.DisplayAnalysis("NEW CLIENT: ", newOffer.Account, "TRACK CLIENTS: ", len(graph.Clients))
 				}
 
-				graph.AccountRoot[newOffer.Account] = append(graph.AccountRoot[newOffer.Account], tx.TxnSignature)
-				display.DisplayAnalysis("TX SIGN: ", tx.TxnSignature, "TRACK CLIENT/TX:", len(graph.AccountRoot[newOffer.Account]))
+				graph.AccountLedger[newOffer.Account] = append(graph.AccountLedger[newOffer.Account], tx.TxnSignature)
+				display.DisplayAnalysis("TX SIGN: ", tx.TxnSignature, "TRACK CLIENT/TX:", len(graph.AccountLedger[newOffer.Account]))
 				graph.insertNewOffer(newOffer)
 			}
 

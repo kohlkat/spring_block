@@ -50,7 +50,7 @@ type Graph struct {
 	AccountRoots map[string]map[int]*Offer
 	Issuers map[string]bool
 	Clients map[string]bool
-	AccountRoot map[string][]string
+	AccountLedger map[string][]string
 	Lock  sync.RWMutex
 }
 

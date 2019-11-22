@@ -39,9 +39,8 @@ func main() {
 		seq_nb := 1
 
 		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
-		//Create array of issuers
+		//Create array of issuers and clients
 		keys := reflect.ValueOf(liquidOptimizer.Graph.Issuers).MapKeys()
-
 		for i := 0; i < len(keys); i++ {
 			server.Issuers = append(server.Issuers, keys[i].String())
 		}
@@ -49,7 +48,12 @@ func main() {
 		for i := 0; i < len(keys); i++ {
 			server.Clients = append(server.Clients, keys[i].String())
 		}
-		//server.Clients = CopyArray(server.Clients, reflect.ValueOf(liquidOptimizer.Graph.Clients).MapKeys())
+		keys = reflect.ValueOf(liquidOptimizer.Graph.AccountLedger).MapKeys()
+
+		for i := 0; i < len(keys); i++ {
+			server.AccountOrders[keys[i].String()] = len(liquidOptimizer.Graph.AccountLedger[keys[i].String()])
+
+		}
 
 
 		if allOffers != nil {
@@ -68,11 +72,3 @@ func main() {
 	}
 
 }
-/*
-func CopyArray(res []string,  values []string) []string{
-	for i := 0; i < len(values); i++ {
-		res = append(res, values[i].String())
-	}
-	return res
-}
-*/
