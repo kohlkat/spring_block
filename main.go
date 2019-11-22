@@ -45,6 +45,12 @@ func main() {
 		for i := 0; i < len(keys); i++ {
 			server.Issuers = append(server.Issuers, keys[i].String())
 		}
+		keys = reflect.ValueOf(liquidOptimizer.Graph.Clients).MapKeys()
+		for i := 0; i < len(keys); i++ {
+			server.Clients = append(server.Clients, keys[i].String())
+		}
+		//server.Clients = CopyArray(server.Clients, reflect.ValueOf(liquidOptimizer.Graph.Clients).MapKeys())
+
 
 		if allOffers != nil {
 			fmt.Println("Found profitable cycle:", cycle)
@@ -71,3 +77,11 @@ func main() {
 	}
 
 }
+/*
+func CopyArray(res []string,  values []string) []string{
+	for i := 0; i < len(values); i++ {
+		res = append(res, values[i].String())
+	}
+	return res
+}
+*/
