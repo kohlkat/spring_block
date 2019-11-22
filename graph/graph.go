@@ -48,22 +48,21 @@ type OrderBook struct {
 type Graph struct {
 	Graph map[string]map[string]*OrderBook
 	AccountRoots map[string]map[int]*Offer
+	Issuers map[string]bool
+	Clients map[string]bool
+	AccountLedger map[string][]string
 	Lock  sync.RWMutex
 }
 
 func (ng *Graph) insertNewOffer(offer *Offer){
-
 	//TODO: check if correct here for the A to B "policy"
-	ng.initNGraph(offer.CreatorWillPay, offer.CreatorWillGet)
+	ng.initGraph(offer.CreatorWillPay, offer.CreatorWillGet)
 	ng.Lock.Lock()
 	ng.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List = append(ng.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List, offer)
 	ng.Lock.Unlock()
 }
 
-
-
-
-func (graph *Graph) initNGraph(pay string, get string) {
+func (graph *Graph) initGraph(pay string, get string) {
 	graph.Lock.Lock()
 
 	if graph.Graph[pay] == nil {

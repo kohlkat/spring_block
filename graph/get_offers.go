@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"fmt"
 	"math"
 	"log"
 )
@@ -10,8 +11,9 @@ func CheckProfitable(edges map[int][]Offer) bool {
 	for _, v := range edges {
 		product = product * v[0].Rate
 	}
-	log.Println("product", product)
-	return product > 1
+	fmt.Println("product", product)
+	//Otherwise opportunity is not worth taking due to the fees
+	return product > 1.0009
 }
 
 func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
@@ -44,7 +46,8 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 			log.Println("predecessors", predecessors)
 			log.Println(cycle, cycle[i], cycle[(i+1)%cycle_count], edges)
 			log.Println("simple", simpleGraph.Graph[cycle[i]][cycle[(i+1)%cycle_count]])
-			panic("Should never happen")
+			//panic("Should never happen")
+			log.Println("PANIC should never happen")
 		}
 
 		edge := edges.List[0]
@@ -59,7 +62,8 @@ func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
 
 	if !CheckProfitable(res) {
 		log.Println("res", res)
-		panic("Positive cycle doesn't exist.")
+		//panic("Positive cycle doesn't exist.")
+		log.Println("PANIC positive cycle does not exists")
 	}
 
 	for true {
