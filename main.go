@@ -49,14 +49,23 @@ func main() {
 		if allOffers != nil {
 			fmt.Println("Found profitable cycle:", cycle)
 			fmt.Println("====================================================================================")
+			hello := make([]*server.OfferSummary, 0)
 			for i, offers := range allOffers {
 				for _, offer := range offers {
 					fmt.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.TxHash, "Volume:", offer.Quantity)
 					//offer.Submit_Transaction(seq_nb)
 					seq_nb = seq_nb + 1
+					summary := &server.OfferSummary{
+						From:   offer.CreatorWillPay,
+						To:     offer.CreatorWillGet,
+						Rate:   offer.Rate,
+						Hash:   offer.TxHash,
+						Volume: offer.Quantity,
+					}
+					hello = append(hello, summary)
 				}
 			}
-			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
+			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: hello})
 			fmt.Println("====================================================================================")
 		}
 	}
