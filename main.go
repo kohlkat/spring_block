@@ -5,6 +5,7 @@ import (
 	"fmt"
 	display "github.com/gaspardpeduzzi/spring_block/display"
 	server "github.com/gaspardpeduzzi/spring_block/server"
+	"reflect"
 )
 
 func main() {
@@ -34,10 +35,17 @@ func main() {
 		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
 
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+
 		seq_nb := 1
 
+		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
+		//Create array of issuers
+		keys := reflect.ValueOf(liquidOptimizer.Graph.Issuers).MapKeys()
 
-		//Should never be displayed in verbose mode :)
+		for i := 0; i < len(keys); i++ {
+			server.Issuers = append(server.Issuers, keys[i].String())
+		}
+
 		if allOffers != nil {
 			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
 

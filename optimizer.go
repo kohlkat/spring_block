@@ -51,7 +51,7 @@ func (lo *Optimizer) ConstructTxGraph() {
 }
 
 func (lo *Optimizer) ParseOfferCreateTransactions(transactions []data.Transaction) {
-	display.DisplayVerbose("ADDED", len(transactions), "new transaction(s)")
+	display.DisplayVerbose("ADDED", len(transactions), "OfferCreate and OfferCancel transaction(s)")
 	for _, tx := range transactions {
 		lo.Graph.ParseTransaction(tx)
 	}
