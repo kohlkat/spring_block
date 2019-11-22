@@ -47,16 +47,12 @@ func arbitrage(w http.ResponseWriter, r *http.Request) {
 
 func accounts(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/accounts" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
-	}
-	switch r.Method {
-	case "GET":
 		err := json.NewEncoder(w).Encode(AccountsNumber)
 		if err != nil {
 			log.Println("Error encoding", err)
 		}
 	}
+
 }
 
 func LaunchServer() {

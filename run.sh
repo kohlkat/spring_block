@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-declare -i count=0
 
+
+
+declare -i count=0
 # write to file only the opportunities
 test(){
   ((count++))
@@ -14,5 +16,12 @@ test(){
   fi
 }
 
-test
+#test
+
+
+./spring_block >> results.out &
+#pkill -f spring_block
+
+
+
 echo over
