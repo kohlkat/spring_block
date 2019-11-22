@@ -21,6 +21,7 @@ func NewOptimizer(endpoint string, c chan int) *Optimizer {
 		Graph: make(map[string]map[string]*graph.OrderBook),
 		AccountRoots: make(map[string]map[int]*graph.Offer),
 		Issuers: make(map[string]bool),
+		Clients: make(map[string]bool),
 		Lock:  sync.RWMutex{},
 	}
 	return &Optimizer{endpoint, graph, c}

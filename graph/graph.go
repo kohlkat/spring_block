@@ -49,6 +49,7 @@ type Graph struct {
 	Graph map[string]map[string]*OrderBook
 	AccountRoots map[string]map[int]*Offer
 	Issuers map[string]bool
+	Clients map[string]bool
 	Lock  sync.RWMutex
 }
 

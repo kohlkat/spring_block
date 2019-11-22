@@ -63,6 +63,10 @@ func (graph *Graph) ParseTransaction(tx data.Transaction) (newOffers []Offer) {
 					graph.Issuers[newOffer.Issuer] = true
 					display.DisplayAnalysis("NEW ISSUER: ", newOffer.Issuer, "TRACK ISSUERS: ",  len(graph.Issuers))
 				}
+				if ! graph.Clients[newOffer.Account] {
+					graph.Clients[newOffer.Account] = true
+					display.DisplayAnalysis("NEW CLIENT", newOffer.Account, "TRACK CLIENTS: ", len(graph.Clients))
+				}
 
 
 				graph.insertNewOffer(newOffer)
