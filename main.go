@@ -48,12 +48,15 @@ func main() {
 		for i := 0; i < len(keys); i++ {
 			server.Clients = append(server.Clients, keys[i].String())
 		}
-		keys = reflect.ValueOf(liquidOptimizer.Graph.AccountLedger).MapKeys()
 
+		keys = reflect.ValueOf(liquidOptimizer.Graph.AccountLedger).MapKeys()
 		for i := 0; i < len(keys); i++ {
 			server.AccountOrders[keys[i].String()] = len(liquidOptimizer.Graph.AccountLedger[keys[i].String()])
 
 		}
+
+		//server.LatestTx := liquidOptimizer.Graph.
+		//Latest Opportunity
 
 
 		if allOffers != nil {
@@ -71,11 +74,29 @@ func main() {
 						Rate:   offer.Rate,
 						Hash:   offer.TxHash,
 						Volume: offer.Quantity,
+
 					}
 					hello = append(hello, summary)
 				}
 			}
 			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: hello})
+			//Latest Opportunity
+			latest := server.ArbitrageOffersDB[len(server.ArbitrageOffersDB)-1]
+			var product float64 = 1.0
+			for i, offer := range latest.Offers {
+				sent := product
+				product = product*offer.Rate
+				opp := &server.Opportunity{
+					Step:     i,
+					Sent:      fmt.Sprintf("%f", sent) + " "+ cycle[i] ,
+					Received: fmt.Sprintf("%f", product) + " " +cycle[(i+1)%len(cycle)],
+					Rate:     offer.Rate,
+					Hash:     offer.Hash,
+				}
+				server.LatestOpportunity = append(server.LatestOpportunity, opp)
+			}
+
+
 			fmt.Println("====================================================================================")
 		}
 	}

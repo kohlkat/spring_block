@@ -11,6 +11,18 @@ import (
 type OK struct {
 	Welcome string
 }
+//[{step: 1, sent: "139.359 XRP", received: "1501.834 ULT",
+// rate: 10.433, hash: "KJDSNFKJSDNF"},  {step: 2 ....} {step: 3 ...} ]
+type Opportunity struct {
+	Step int
+	Sent string
+	Received string
+	Rate float64
+	Hash string
+
+}
+
+
 
 // ArbitrageOffersDB : Datastructure to hold arbitrage opportunities
 var ArbitrageOffersDB []*ArbitrageOpportunities
@@ -22,6 +34,9 @@ var Issuers []string
 var Clients []string
 //For a given account give the number of tx it is involved
 var AccountOrders map[string]int
+
+var LatestOpportunity []*Opportunity
+
 
 func connect(w http.ResponseWriter, r *http.Request) {
 	log.Println("RECEIVED REQUEST")
@@ -114,10 +129,29 @@ func accountOrders(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func latestOpportunity(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/latestOpportunity" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		err := json.NewEncoder(w).Encode(LatestOpportunity)
+		//Install
+
+		if err != nil {
+			log.Println("Error encoding", err)
+		}
+	}
+}
+
+
+
 func LaunchServer() {
 	log.Println("GUI Server up and running")
 	ArbitrageOffersDB = make([]*ArbitrageOpportunities, 0)
 	AccountOrders = make(map[string]int)
+	LatestOpportunity = make([]*Opportunity, 0)
 
 	//fs := http.FileServer(http.Dir(""))
 	fs := http.FileServer(http.Dir("frontend"))
@@ -129,6 +163,7 @@ func LaunchServer() {
 	http.HandleFunc("/issuers", issuers)
 	http.HandleFunc("/clients", clients)
 	http.HandleFunc("/accountOrders", accountOrders)
+	http.HandleFunc("/latestOpportunity", latestOpportunity)
 
 
 
