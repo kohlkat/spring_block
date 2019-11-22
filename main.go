@@ -33,6 +33,7 @@ func main() {
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
 		seq_nb := 1
 		server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
+		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
 
 		if allOffers != nil {
 			//Should never be displayed in verbose mode :)
