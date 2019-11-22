@@ -47,9 +47,9 @@ func arbitrage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 // Send accounts number info
-func accounts(w http.ResponseWriter, r *http.Request) {
+func accountsNumber(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/accounts" {
+	if r.URL.Path != "/accountsNumber" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
@@ -62,6 +62,7 @@ func accounts(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Send list of issuers
 func issuers(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/issuers" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
@@ -76,6 +77,20 @@ func issuers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func clients(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/clients" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		err := json.NewEncoder(w).Encode(Clients)
+		if err != nil {
+			log.Println("Error encoding", err)
+		}
+	}
+}
+
 func LaunchServer() {
 	log.Println("GUI Server up and running")
 	ArbitrageOffersDB = make([]*ArbitrageOpportunities, 0)
@@ -86,8 +101,10 @@ func LaunchServer() {
 
 	http.HandleFunc("/connect", connect)
 	http.HandleFunc("/arbitrage", arbitrage)
-	http.HandleFunc("/accounts", accounts)
+	http.HandleFunc("/accountsNumber", accountsNumber)
 	http.HandleFunc("/issuers", issuers)
+	http.HandleFunc("/clients", clients)
+
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println(err)

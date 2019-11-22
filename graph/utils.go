@@ -1,11 +1,10 @@
 package graph
 
 import (
+	"fmt"
+	"log"
 	"math"
 	"os/exec"
-	"log"
-	"fmt"
-
 )
 
 var priceRipple = 0.27
@@ -30,4 +29,6 @@ func (offer *Offer) Submit_Transaction(seq_nb int) {
 	out, err := exec.Command("./submit.sh", offer.Account, offer.CreatorWillPay, fmt.Sprintf("%f", offer.Quantity), offer.Issuer, fmt.Sprintf("%d", seq_nb)).Output()
 	log.Println("out, err", string(out), err)
 }
+
+
 
