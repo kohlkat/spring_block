@@ -14,6 +14,8 @@ type OK struct {
 // ArbitrageOffersDB : Datastructure to hold arbitrage opportunities
 var ArbitrageOffersDB []*ArbitrageOpportunities
 var AccountsNumber int
+var Issuers []string
+var Clients []string
 
 func connect(w http.ResponseWriter, r *http.Request) {
 	log.Println("RECEIVED REQUEST")
@@ -44,7 +46,7 @@ func arbitrage(w http.ResponseWriter, r *http.Request) {
 			}
 	}
 }
-
+// Send accounts number info
 func accounts(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/accounts" {
@@ -58,7 +60,20 @@ func accounts(w http.ResponseWriter, r *http.Request) {
 				log.Println("Error encoding", err)
 			}
 	}
+}
 
+func issuers(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/issuers" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+		case "GET":
+			err := json.NewEncoder(w).Encode(Issuers)
+			if err != nil {
+				log.Println("Error encoding", err)
+			}
+	}
 }
 
 func LaunchServer() {
@@ -72,6 +87,7 @@ func LaunchServer() {
 	http.HandleFunc("/connect", connect)
 	http.HandleFunc("/arbitrage", arbitrage)
 	http.HandleFunc("/accounts", accounts)
+	http.HandleFunc("/issuers", issuers)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println(err)

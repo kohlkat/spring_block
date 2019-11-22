@@ -5,6 +5,7 @@ import (
 	"fmt"
 	display "github.com/gaspardpeduzzi/spring_block/display"
 	server "github.com/gaspardpeduzzi/spring_block/server"
+	"reflect"
 )
 
 func main() {
@@ -33,8 +34,13 @@ func main() {
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
 		seq_nb := 1
 		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
+		//Create array of issuers
+		keys := reflect.ValueOf(liquidOptimizer.Graph.Issuers).MapKeys()
+		for i := 0; i < len(keys); i++ {
+			server.Issuers = append(server.Issuers, keys[i].String())
+		}
 
-
+	//    keys := reflect.ValueOf(a).MapKeys()
 
 		if allOffers != nil {
 			//Should never be displayed in verbose mode :)
