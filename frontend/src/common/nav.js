@@ -9,6 +9,7 @@ export class Sidebar extends Component {
             { pathname: '/history', label: 'History', icon: 'list-ul' },
             { pathname: '/network', label: 'Network', icon: 'dot-circle-o' },
             { pathname: '/about', label: 'About', icon: 'info' },
+            { pathname: 'helloworld', label: 'Hello World'}
         ],
     }
 
