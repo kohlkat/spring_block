@@ -103,7 +103,7 @@ func main() {
 			if len(server.ArbitrageOffersDB) > 10 {
 				recents = server.ArbitrageOffersDB[len(server.ArbitrageOffersDB)-11 : len(server.ArbitrageOffersDB)-1]
 			}
-			
+
 			for _, offers := range recents {
 				cycleSize := 1
 				pairs := ""
