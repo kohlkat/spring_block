@@ -44,6 +44,23 @@ func arbitrage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func currencies(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/arbitrage" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+	switch r.Method {
+	case "GET":
+		err := json.NewEncoder(w).Encode(ArbitrageOffersDB)
+		if err != nil {
+			log.Println("Error encoding", err)
+		}
+	}
+
+}
+
+
+
 func LaunchServer() {
 	log.Println("GUI Server up and running")
 	ArbitrageOffersDB = make([]*ArbitrageOpportunities, 0)
