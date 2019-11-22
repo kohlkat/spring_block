@@ -3,6 +3,7 @@ package graph
 import (
 	"github.com/gaspardpeduzzi/spring_block/data"
 	"github.com/gaspardpeduzzi/spring_block/display"
+	"log"
 )
 
 func (graph *Graph) PaymentTransactionParse(tx data.Transaction) (newOffers []Offer) {
@@ -17,6 +18,10 @@ func (graph *Graph) PaymentTransactionParse(tx data.Transaction) (newOffers []Of
 				display.DisplayAnalysis(k,i, v, j)
 			}
 		}
+
+
+		display.DisplayAnalysis(tx.TakerGets)
+		display.DisplayAnalysis(tx.TakerPays)
 		display.DisplayAnalysis("====================================================================================")
 	}
 
@@ -84,7 +89,7 @@ func (graph *Graph) PaymentTransactionParse(tx data.Transaction) (newOffers []Of
 			}
 		} else if d {
 			//display.DisplayVerbose("DELETED NODE", v.DeletedNode.LedgerEntryType)
-			if v.DeletedNode.LedgerEntryType == "Offer" {
+			if v.DeletedNode.LedgerEntryType == "Offer" && tx.MetaData.TransactionResult == "tesSUCCESS" {
 
 				//graph BTC ETH donne offerCreate pour obtenir ETH en payant BTC
 				//[TG][TP]
@@ -110,11 +115,13 @@ func (graph *Graph) PaymentTransactionParse(tx data.Transaction) (newOffers []Of
 					Issuer:         issuerTG,
 				}
 
+
 				//deletedOffers = append(deletedOffers, offer)
 				if graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet] != nil {
 					for k, v := range graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List {
 						if v.Account == account && v.SequenceNumber == seq {
 							removeOffer(graph.Graph[offer.CreatorWillPay][offer.CreatorWillGet].List,k)
+							log.Println("DELETED")
 
 						}
 					}
