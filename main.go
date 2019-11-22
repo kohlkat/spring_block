@@ -31,11 +31,17 @@ func main() {
 	for {
 		display.DisplayVerbose("waiting for next block...")
 		<-c
+		//update server data
+		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
+
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
+
 		seq_nb := 1
+
 		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
 		//Create array of issuers
 		keys := reflect.ValueOf(liquidOptimizer.Graph.Issuers).MapKeys()
+
 		for i := 0; i < len(keys); i++ {
 			server.Issuers = append(server.Issuers, keys[i].String())
 		}
@@ -46,11 +52,7 @@ func main() {
 		//server.Clients = CopyArray(server.Clients, reflect.ValueOf(liquidOptimizer.Graph.Clients).MapKeys())
 
 
-	//    keys := reflect.ValueOf(a).MapKeys()
-
 		if allOffers != nil {
-			//Should never be displayed in verbose mode :)
-			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})
 			fmt.Println("Found profitable cycle:", cycle)
 			fmt.Println("====================================================================================")
 			for i, offers := range allOffers {
@@ -58,7 +60,6 @@ func main() {
 					fmt.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.TxHash, "Volume:", offer.Quantity)
 					//offer.Submit_Transaction(seq_nb)
 					seq_nb = seq_nb + 1
-
 				}
 			}
 			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: make([]*server.OfferSummary, 0)})

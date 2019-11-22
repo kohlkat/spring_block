@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"fmt"
 	"math"
 	"log"
 )
@@ -10,8 +11,9 @@ func CheckProfitable(edges map[int][]Offer) bool {
 	for _, v := range edges {
 		product = product * v[0].Rate
 	}
-	log.Println("product", product)
-	return product > 1
+	fmt.Println("product", product)
+	//Otherwise opportunity is not worth taking due to the fees
+	return product > 1.0009
 }
 
 func (graph *Graph) GetProfitableOffers() (map[int][]Offer, []string) {
