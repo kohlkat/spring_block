@@ -100,7 +100,7 @@ func (graph *Graph) CreateSimpleGraph() SimplerGraph {
 	for k1, v1 := range graph.Graph {
 		for k2, v2 := range v1 {
 			if len(v2.List) > 0 {
-				simpleGraph[k1][k2] = -math.Log(v2.List[0].Rate)
+				simpleGraph[k1][k2] = math.Log(v2.List[0].Rate)
 			}
 		}
 	}

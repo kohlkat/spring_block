@@ -1,10 +1,10 @@
 package graph
 
 import (
-	"fmt"
-	"log"
 	"math"
 	"os/exec"
+	"log"
+	"fmt"
 )
 
 var priceRipple = 0.27
@@ -25,10 +25,15 @@ func removeOffer(slice []*Offer, s int) []*Offer {
 	return append(slice[:s], slice[s+1:]...)
 }
 
-func (offer *Offer) Submit_Transaction(seq_nb int) {
-	out, err := exec.Command("./submit.sh", offer.Account, offer.CreatorWillPay, fmt.Sprintf("%f", offer.Quantity), offer.Issuer, fmt.Sprintf("%d", seq_nb)).Output()
+func Submit_Transaction(cycle []Offer) {
+	// value1 := fmt.Sprintf("%f", offer.Quantity)
+	// value2 := fmt.Sprintf("%f", offer.Quantity * offer.Rate)
+
+	args := fmt.Sprintf("%s %f", cycle[0].CreatorWillPay, 1.0)
+	for i, offer := range cycle[1:] {
+		args = fmt.Sprintf("%s %s %s", args, offer.CreatorWillPay, cycle[i].Issuer)
+	}
+
+	out, err := exec.Command("./submit.sh", args).Output()
 	log.Println("out, err", string(out), err)
 }
-
-
-

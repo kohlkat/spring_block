@@ -5,6 +5,7 @@ import (
 	"fmt"
 	display "github.com/gaspardpeduzzi/spring_block/display"
 	server "github.com/gaspardpeduzzi/spring_block/server"
+	graph "github.com/gaspardpeduzzi/spring_block/graph"
 	"reflect"
 )
 
@@ -36,8 +37,6 @@ func main() {
 
 		allOffers, cycle := liquidOptimizer.Graph.GetProfitableOffers()
 
-		seq_nb := 1
-
 		server.AccountsNumber = len(liquidOptimizer.Graph.Clients)
 		//Create array of issuers and clients
 		keys := reflect.ValueOf(liquidOptimizer.Graph.Issuers).MapKeys()
@@ -60,24 +59,25 @@ func main() {
 
 
 		if allOffers != nil {
-			fmt.Println("Found profitable cycle:", cycle)
+			fmt.Println("Found profitable cycle:", cycle, "untrusted issuers")
 			fmt.Println("====================================================================================")
 			hello := make([]*server.OfferSummary, 0)
-			for i, offers := range allOffers {
-				for _, offer := range offers {
-					fmt.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.TxHash, "Volume:", offer.Quantity)
-					//offer.Submit_Transaction(seq_nb)
-					seq_nb = seq_nb + 1
-					summary := &server.OfferSummary{
-						From:   offer.CreatorWillPay,
-						To:     offer.CreatorWillGet,
-						Rate:   offer.Rate,
-						Hash:   offer.TxHash,
-						Volume: offer.Quantity,
 
-					}
-					hello = append(hello, summary)
+			graph.Submit_Transaction(allOffers)
+			return
+
+			for i, offer := range allOffers {
+				fmt.Println(cycle[i], "->", cycle[(i+1)%len(cycle)], offer.Rate, "OfferCreate Hash:", offer.TxHash, "Volume:", offer.Quantity)
+				//offer.Submit_Transaction(seq_nb)
+
+				summary := &server.OfferSummary{
+					From:   offer.CreatorWillPay,
+					To:     offer.CreatorWillGet,
+					Rate:   offer.Rate,
+					Hash:   offer.TxHash,
+					Volume: offer.Quantity,
 				}
+				hello = append(hello, summary)
 			}
 			server.ArbitrageOffersDB = append(server.ArbitrageOffersDB, &server.ArbitrageOpportunities{Pair: cycle, Offers: hello})
 
