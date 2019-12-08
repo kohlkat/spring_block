@@ -1,8 +1,8 @@
 package graph
 
-// import (
-// 	"log"
-// )
+import (
+	"log"
+)
 
 func GetCycle(asset string, predecessors map[string]string) []string {
 
@@ -33,10 +33,7 @@ func GetCycle(asset string, predecessors map[string]string) []string {
     cycle[i], cycle[j] = cycle[j], cycle[i]
   }
 
-  log.Println(0, cycle)
-
   res := adjust_cycle(cycle)
-  log.Println(1, res)
 
   if res == nil {
     log.Println("Could not find primary asset in cycle", cycle)
@@ -72,6 +69,15 @@ func adjust_cycle(cycle []string) []string {
 	}
 
 	return newCycle
+}
+
+func contains(s []string, e string) bool {
+    for _, a := range s {
+        if a == e {
+            return true
+        }
+    }
+    return false
 }
 
 

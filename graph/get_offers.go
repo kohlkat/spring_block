@@ -12,8 +12,10 @@ func CheckProfitable(edges []Offer) bool {
 		product = product * v.Rate
 	}
 	fmt.Println("product", product)
-	//Otherwise opportunity is not worth taking due to the fees
-	return true//product > 1.000
+	// Otherwise opportunity is not worth taking due to the fees
+	fee := 10.0
+	minimum_move := 1000000.0
+	return product > (1 + (fee / minimum_move) * 2)
 }
 
 func (graph *Graph) GetProfitableOffers() ([]Offer, []string) {
@@ -60,9 +62,8 @@ func (graph *Graph) GetProfitableOffers() ([]Offer, []string) {
 	}
 
 	if !CheckProfitable(res) {
-		log.Println("res", res)
-		//panic("Positive cycle doesn't exist.")
-		log.Println("PANIC positive cycle does not exists")
+		log.Println("Not profitable enough")
+		return nil, nil
 	}
 
 	return res, cycle

@@ -48,7 +48,7 @@ func GetLedgerData(addr *string, indexLedger int) []Transaction{
 	response := &LedgerResponseExpanded{}
 	err = json.Unmarshal(message, response)
 	if err != nil {
-		panic("Error unmarshalling" + err.Error())
+		log.Println("Error unmarshalling " + err.Error())
 	}
 
 	transactionsStruct := response.Result.Ledger.Transactions
