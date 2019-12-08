@@ -135,7 +135,11 @@ func (graph *Graph) SortGraphWithTxs() {
 			})
 			//sortedGraph[k1][k2] = &TxList{List: list}
 			//display.DisplayVerbose("VERIF", list[0], list[1])
-			copy(graph.Graph[k1][k2].List, list)
+			sliced := len(v2.List)
+			if sliced > 20 {
+				sliced = 20
+			}
+			copy(graph.Graph[k1][k2].List, list[:sliced])
 		}
 	}
 }

@@ -140,6 +140,10 @@ func main() {
 
 			fmt.Println("====================================================================================")
 		}
+
+		elapsed := time.Since(startingTime)
+		log.Printf("Took %s to parse and analyse opportunities ", elapsed)
+
 	}
 
 }

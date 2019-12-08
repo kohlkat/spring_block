@@ -81,8 +81,6 @@ func (graph *Graph) PaymentTransactionParse(tx data.Transaction) (newOffers []Of
 			}
 
 		} else if m {
-
-
 			if v.DeletedNode.LedgerEntryType == "Offer" {
 				display.DisplayVerbose("MODIFIED NODE OFFER", v.ModifiedNode.LedgerEntryType)
 
