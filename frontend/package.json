@@ -6,7 +6,7 @@
     "@amcharts/amcharts4": "^4.7.10",
     "@amcharts/amcharts4-geodata": "^4.1.9",
     "@mrblenny/react-flow-chart": "0.0.8",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "chart.js": "^2.9.3",
     "country-list": "^2.2.0",
     "dagre": "^0.8.4",
