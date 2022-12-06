@@ -57,7 +57,7 @@ func main() {
 
 		}
 
-		//server.LatestTx := liquidOptimizer.Graph.
+		server.LatestTx := liquidOptimizer.Graph.
 		//Latest Opportunity
 
 
@@ -170,7 +170,7 @@ func Submit_Transaction(cycle []graph.Offer) {
 		args = fmt.Sprintf("%s %s %s", args, offer.CreatorWillPay, cycle[i].Issuer)
 	}
 
-	// args = fmt.Sprintf("%s %s", args, "> output")
+	args = fmt.Sprintf("%s %s", args, "> output")
 
 	Print(args)
 
